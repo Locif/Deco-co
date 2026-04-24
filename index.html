@@ -1,0 +1,1436 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Deco — Interior Design Marketplace</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --sand: #F5EFE6;
+    --sand-dark: #EBE0D0;
+    --mocha: #2C1810;
+    --mocha-mid: #5A3E32;
+    --terra: #C4714A;
+    --terra-light: #E8C4B0;
+    --gold: #B8924A;
+    --cream: #FDFAF6;
+    --gray-soft: #9A8F87;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--mocha);
+    overflow-x: hidden;
+  }
+
+  /* RTL Arabic mode */
+  [lang="ar"] body, body.ar {
+    font-family: 'Tajawal', 'DM Sans', sans-serif;
+    direction: rtl;
+    text-align: right;
+  }
+
+  h1, h2, h3 { font-family: 'Cormorant Garamond', serif; font-weight: 300; }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1.2rem 4rem;
+    background: rgba(253, 250, 246, 0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(44,24,16,0.08);
+  }
+  .nav-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.6rem; font-weight: 600; letter-spacing: 0.08em;
+    color: var(--mocha); text-decoration: none;
+  }
+  .nav-logo span { color: var(--terra); }
+  .nav-links { display: flex; align-items: center; gap: 2.5rem; }
+  .nav-links a {
+    font-size: 0.82rem; letter-spacing: 0.06em; text-transform: uppercase;
+    color: var(--mocha-mid); text-decoration: none;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--terra); }
+  .nav-actions { display: flex; align-items: center; gap: 1rem; }
+  .lang-toggle {
+    font-size: 0.78rem; letter-spacing: 0.08em; text-transform: uppercase;
+    background: none; border: 1px solid var(--mocha);
+    color: var(--mocha); padding: 0.4rem 0.9rem; border-radius: 2rem;
+    cursor: pointer; transition: all 0.2s; font-family: inherit;
+  }
+  .lang-toggle:hover { background: var(--mocha); color: var(--cream); }
+  .btn-nav {
+    font-size: 0.82rem; letter-spacing: 0.04em;
+    background: var(--terra); color: white;
+    border: none; padding: 0.6rem 1.4rem; border-radius: 2rem;
+    cursor: pointer; transition: all 0.2s; font-family: inherit;
+  }
+  .btn-nav:hover { background: var(--mocha); }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: grid; grid-template-columns: 1fr 1fr;
+    padding-top: 5rem;
+    background: var(--cream);
+  }
+  .hero-left {
+    display: flex; flex-direction: column; justify-content: center;
+    padding: 5rem 4rem 5rem 5rem;
+  }
+  .hero-tag {
+    font-size: 0.75rem; letter-spacing: 0.15em; text-transform: uppercase;
+    color: var(--terra); margin-bottom: 1.5rem;
+    display: flex; align-items: center; gap: 0.6rem;
+  }
+  .hero-tag::before { content: ''; width: 2rem; height: 1px; background: var(--terra); }
+  .hero h1 {
+    font-size: clamp(3rem, 5vw, 4.5rem);
+    line-height: 1.1; color: var(--mocha);
+    margin-bottom: 1.5rem;
+  }
+  .hero h1 em { font-style: italic; color: var(--terra); }
+  .hero-sub {
+    font-size: 1rem; line-height: 1.7; color: var(--mocha-mid);
+    max-width: 420px; margin-bottom: 3rem;
+  }
+  .hero-ctas { display: flex; gap: 1rem; flex-wrap: wrap; }
+  .btn-primary {
+    background: var(--mocha); color: var(--cream);
+    border: none; padding: 0.9rem 2rem; border-radius: 2rem;
+    font-size: 0.88rem; letter-spacing: 0.04em;
+    cursor: pointer; transition: all 0.25s; font-family: inherit;
+    text-decoration: none; display: inline-block;
+  }
+  .btn-primary:hover { background: var(--terra); transform: translateY(-2px); }
+  .btn-outline {
+    background: none; color: var(--mocha);
+    border: 1px solid var(--mocha); padding: 0.9rem 2rem; border-radius: 2rem;
+    font-size: 0.88rem; letter-spacing: 0.04em;
+    cursor: pointer; transition: all 0.25s; font-family: inherit;
+    text-decoration: none; display: inline-block;
+  }
+  .btn-outline:hover { background: var(--mocha); color: var(--cream); }
+  .hero-stats {
+    display: flex; gap: 3rem; margin-top: 4rem;
+    padding-top: 2.5rem; border-top: 1px solid var(--sand-dark);
+  }
+  .stat-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2rem; font-weight: 300; color: var(--terra);
+  }
+  .stat-label { font-size: 0.75rem; color: var(--gray-soft); letter-spacing: 0.05em; margin-top: 0.2rem; }
+
+  .hero-right {
+    position: relative; overflow: hidden;
+    background: var(--sand);
+  }
+  .hero-mosaic {
+    display: grid; grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    height: 100%; gap: 3px;
+  }
+  .mosaic-cell {
+    overflow: hidden; position: relative;
+  }
+  .mosaic-cell.tall { grid-row: span 2; }
+  .mosaic-img {
+    width: 100%; height: 100%; object-fit: cover;
+    transition: transform 0.6s ease;
+  }
+  .mosaic-cell:hover .mosaic-img { transform: scale(1.04); }
+  /* Placeholder images using CSS patterns */
+  .img-placeholder {
+    width: 100%; height: 100%; min-height: 200px;
+    display: flex; align-items: flex-end; padding: 1.5rem;
+    position: relative; overflow: hidden;
+  }
+  .img-p1 { background: linear-gradient(135deg, #D4B896 0%, #C49A72 50%, #A07040 100%); }
+  .img-p2 { background: linear-gradient(135deg, #8BA0A8 0%, #6E8A96 50%, #4E6E7A 100%); }
+  .img-p3 { background: linear-gradient(135deg, #C8B8A4 0%, #B09C84 50%, #8C7860 100%); }
+  .img-p4 { background: linear-gradient(135deg, #B4A898 0%, #9A8C7C 50%, #7A6C5C 100%); }
+  .room-label {
+    font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase;
+    color: rgba(253,250,246,0.85); background: rgba(44,24,16,0.35);
+    padding: 0.3rem 0.7rem; border-radius: 1rem; backdrop-filter: blur(4px);
+  }
+  /* Decorative room elements */
+  .room-shape {
+    position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+    opacity: 0.15;
+  }
+
+  /* HOW IT WORKS */
+  .section-how {
+    padding: 7rem 5rem;
+    background: var(--sand);
+  }
+  .section-label {
+    font-size: 0.75rem; letter-spacing: 0.15em; text-transform: uppercase;
+    color: var(--terra); margin-bottom: 0.8rem;
+    display: flex; align-items: center; gap: 0.6rem;
+  }
+  .section-label::before { content: ''; width: 1.5rem; height: 1px; background: var(--terra); }
+  .section-title {
+    font-size: clamp(2rem, 3.5vw, 3rem);
+    color: var(--mocha); margin-bottom: 1rem;
+  }
+  .section-sub { font-size: 1rem; color: var(--mocha-mid); max-width: 500px; line-height: 1.7; }
+  .how-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 4rem; margin-top: 4rem;
+  }
+  .how-side h3 {
+    font-size: 1.5rem; margin-bottom: 2rem; color: var(--mocha);
+    padding-bottom: 1rem; border-bottom: 1px solid rgba(44,24,16,0.12);
+  }
+  .step {
+    display: flex; gap: 1.5rem; margin-bottom: 2rem;
+  }
+  .step-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2.2rem; font-weight: 300; color: var(--terra);
+    line-height: 1; min-width: 2rem;
+  }
+  .step-content h4 { font-size: 1rem; font-weight: 500; margin-bottom: 0.4rem; color: var(--mocha); }
+  .step-content p { font-size: 0.88rem; line-height: 1.6; color: var(--mocha-mid); }
+
+  /* DESIGNERS */
+  .section-designers {
+    padding: 7rem 5rem;
+    background: var(--cream);
+  }
+  .section-header {
+    display: flex; align-items: flex-end; justify-content: space-between;
+    margin-bottom: 3.5rem;
+  }
+  .view-all {
+    font-size: 0.82rem; letter-spacing: 0.05em;
+    color: var(--terra); text-decoration: none;
+    border-bottom: 1px solid var(--terra); padding-bottom: 1px;
+    transition: opacity 0.2s;
+  }
+  .view-all:hover { opacity: 0.7; }
+  .designers-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+  }
+  .designer-card {
+    border: 1px solid rgba(44,24,16,0.1);
+    border-radius: 1rem; overflow: hidden;
+    background: white; transition: all 0.3s;
+    cursor: pointer;
+  }
+  .designer-card:hover { transform: translateY(-6px); box-shadow: 0 20px 50px rgba(44,24,16,0.12); }
+  .designer-portfolio {
+    height: 220px; position: relative; overflow: hidden;
+  }
+  .port-img {
+    width: 100%; height: 100%;
+    transition: transform 0.5s;
+  }
+  .designer-card:hover .port-img { transform: scale(1.06); }
+  .port-d1 { background: linear-gradient(160deg, #C8B4A0 0%, #A8907A 100%); }
+  .port-d2 { background: linear-gradient(160deg, #A0B4C0 0%, #7A98A8 100%); }
+  .port-d3 { background: linear-gradient(160deg, #B8C4A8 0%, #98A888 100%); }
+  .port-room {
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase;
+    color: rgba(253,250,246,0.6);
+  }
+  .badge-verified {
+    position: absolute; top: 1rem; right: 1rem;
+    background: rgba(196,113,74,0.9); color: white;
+    font-size: 0.65rem; letter-spacing: 0.08em; text-transform: uppercase;
+    padding: 0.25rem 0.65rem; border-radius: 1rem;
+    backdrop-filter: blur(4px);
+  }
+  .designer-info { padding: 1.4rem; }
+  .designer-name { font-size: 1.1rem; font-weight: 500; margin-bottom: 0.2rem; }
+  .designer-specialty { font-size: 0.8rem; color: var(--gray-soft); margin-bottom: 0.9rem; }
+  .designer-meta {
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .rating { display: flex; align-items: center; gap: 0.3rem; font-size: 0.82rem; }
+  .stars { color: var(--gold); font-size: 0.75rem; }
+  .rating-count { color: var(--gray-soft); font-size: 0.75rem; }
+  .price-range { font-size: 0.78rem; color: var(--terra); font-weight: 500; }
+  .designer-tags { display: flex; gap: 0.4rem; margin-top: 1rem; flex-wrap: wrap; }
+  .tag {
+    font-size: 0.7rem; padding: 0.2rem 0.6rem; border-radius: 1rem;
+    border: 1px solid rgba(44,24,16,0.12); color: var(--mocha-mid);
+    letter-spacing: 0.04em;
+  }
+
+  /* PROJECTS */
+  .section-projects {
+    padding: 7rem 5rem;
+    background: var(--mocha);
+    color: var(--cream);
+  }
+  .section-projects .section-title { color: var(--cream); }
+  .section-projects .section-label { color: var(--terra-light); }
+  .section-projects .section-label::before { background: var(--terra-light); }
+  .section-projects .section-sub { color: rgba(253,250,246,0.6); }
+  .projects-grid {
+    display: grid; grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem; margin-top: 3.5rem;
+  }
+  .project-card {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 1rem; padding: 1.8rem;
+    display: flex; flex-direction: column; gap: 1.2rem;
+    transition: all 0.3s; cursor: pointer;
+  }
+  .project-card:hover { background: rgba(255,255,255,0.08); border-color: rgba(196,113,74,0.4); }
+  .project-header { display: flex; justify-content: space-between; align-items: flex-start; }
+  .project-type {
+    font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--terra-light); background: rgba(196,113,74,0.15);
+    padding: 0.25rem 0.7rem; border-radius: 1rem;
+  }
+  .project-budget {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.3rem; color: var(--cream); font-weight: 300;
+  }
+  .project-title { font-size: 1.1rem; font-weight: 500; color: var(--cream); }
+  .project-desc { font-size: 0.85rem; line-height: 1.6; color: rgba(253,250,246,0.6); }
+  .project-footer { display: flex; align-items: center; justify-content: space-between; }
+  .project-location { font-size: 0.78rem; color: rgba(253,250,246,0.45); }
+  .project-location::before { content: '📍'; margin-right: 0.3rem; font-size: 0.72rem; }
+  .bid-count { font-size: 0.78rem; color: var(--terra-light); }
+  .post-project {
+    margin-top: 3rem; text-align: center;
+    padding: 3rem; border: 1px dashed rgba(255,255,255,0.15);
+    border-radius: 1rem;
+  }
+  .post-project p { color: rgba(253,250,246,0.5); font-size: 0.9rem; margin-bottom: 1.5rem; }
+
+  /* CATEGORIES */
+  .section-categories {
+    padding: 7rem 5rem;
+    background: var(--sand);
+  }
+  .categories-grid {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 1.2rem; margin-top: 3.5rem;
+  }
+  .cat-card {
+    height: 200px; border-radius: 1rem; overflow: hidden;
+    position: relative; cursor: pointer;
+    transition: transform 0.3s;
+  }
+  .cat-card:hover { transform: scale(1.03); }
+  .cat-card:first-child { grid-column: span 2; grid-row: span 2; height: auto; min-height: 416px; }
+  .cat-bg { width: 100%; height: 100%; position: absolute; inset: 0; }
+  .cat-living { background: linear-gradient(160deg, #C8B4A0 20%, #9A7C60 100%); }
+  .cat-bedroom { background: linear-gradient(160deg, #A4B8C8 20%, #6E8898 100%); }
+  .cat-kitchen { background: linear-gradient(160deg, #C0B89A 20%, #8A806A 100%); }
+  .cat-office { background: linear-gradient(160deg, #B0C0B0 20%, #708070 100%); }
+  .cat-bath { background: linear-gradient(160deg, #C8C0B4 20%, #9A9288 100%); }
+  .cat-overlay {
+    position: absolute; inset: 0;
+    background: linear-gradient(to top, rgba(44,24,16,0.7) 0%, transparent 60%);
+    display: flex; flex-direction: column;
+    justify-content: flex-end; padding: 1.8rem;
+  }
+  .cat-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.4rem; font-weight: 300; color: white;
+    margin-bottom: 0.3rem;
+  }
+  .cat-count { font-size: 0.75rem; color: rgba(255,255,255,0.65); letter-spacing: 0.05em; }
+
+  /* JOIN CTA */
+  .section-join {
+    padding: 7rem 5rem;
+    background: var(--cream);
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+  }
+  .join-card {
+    border-radius: 1.5rem; padding: 3.5rem;
+    position: relative; overflow: hidden;
+  }
+  .join-card.designer-side {
+    background: var(--mocha); color: var(--cream);
+  }
+  .join-card.client-side {
+    background: var(--sand); color: var(--mocha);
+    border: 1px solid var(--sand-dark);
+  }
+  .join-icon { font-size: 2.5rem; margin-bottom: 1.5rem; }
+  .join-card h2 { font-size: 2rem; margin-bottom: 1rem; }
+  .join-card.designer-side h2 { color: var(--cream); }
+  .join-card.client-side h2 { color: var(--mocha); }
+  .join-card p { font-size: 0.9rem; line-height: 1.7; margin-bottom: 2rem; opacity: 0.75; }
+  .join-perks { list-style: none; margin-bottom: 2.5rem; }
+  .join-perks li {
+    font-size: 0.85rem; padding: 0.5rem 0;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    display: flex; align-items: center; gap: 0.7rem;
+  }
+  .join-card.client-side .join-perks li { border-bottom-color: rgba(44,24,16,0.06); }
+  .perk-check { color: var(--terra); font-size: 0.8rem; }
+  .btn-join-designer {
+    background: var(--terra); color: white;
+    border: none; padding: 1rem 2.2rem; border-radius: 2rem;
+    font-size: 0.88rem; cursor: pointer; transition: all 0.25s;
+    font-family: inherit; letter-spacing: 0.04em;
+  }
+  .btn-join-designer:hover { background: #A05C38; transform: translateY(-2px); }
+  .btn-join-client {
+    background: var(--mocha); color: white;
+    border: none; padding: 1rem 2.2rem; border-radius: 2rem;
+    font-size: 0.88rem; cursor: pointer; transition: all 0.25s;
+    font-family: inherit; letter-spacing: 0.04em;
+  }
+  .btn-join-client:hover { background: var(--terra); transform: translateY(-2px); }
+
+  /* FOOTER */
+  footer {
+    background: var(--mocha);
+    color: rgba(253,250,246,0.6);
+    padding: 4rem 5rem 2.5rem;
+  }
+  .footer-grid {
+    display: grid; grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 3rem; margin-bottom: 3rem;
+  }
+  .footer-brand .nav-logo { color: var(--cream); display: block; margin-bottom: 1rem; }
+  .footer-brand p { font-size: 0.85rem; line-height: 1.7; max-width: 260px; }
+  .footer-col h5 {
+    font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--cream); margin-bottom: 1.2rem;
+  }
+  .footer-col a {
+    display: block; font-size: 0.85rem; color: rgba(253,250,246,0.55);
+    text-decoration: none; margin-bottom: 0.6rem; transition: color 0.2s;
+  }
+  .footer-col a:hover { color: var(--terra-light); }
+  .footer-bottom {
+    border-top: 1px solid rgba(255,255,255,0.07);
+    padding-top: 1.5rem;
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 0.78rem;
+  }
+  .footer-langs { display: flex; gap: 1rem; }
+  .footer-langs a { color: rgba(253,250,246,0.4); text-decoration: none; font-size: 0.75rem; }
+  .footer-langs a:hover { color: var(--terra-light); }
+
+  /* SEARCH BAR */
+  .search-bar {
+    display: flex; align-items: center;
+    background: white;
+    border: 1px solid rgba(44,24,16,0.1);
+    border-radius: 3rem; padding: 0.6rem 0.6rem 0.6rem 1.5rem;
+    margin-bottom: 2.5rem; max-width: 480px;
+    box-shadow: 0 4px 20px rgba(44,24,16,0.06);
+  }
+  .search-bar input {
+    border: none; outline: none; font-family: inherit;
+    font-size: 0.88rem; color: var(--mocha); flex: 1; background: none;
+  }
+  .search-bar input::placeholder { color: var(--gray-soft); }
+  .btn-search {
+    background: var(--terra); color: white;
+    border: none; padding: 0.6rem 1.4rem; border-radius: 2rem;
+    font-size: 0.82rem; cursor: pointer; font-family: inherit;
+    transition: background 0.2s;
+  }
+  .btn-search:hover { background: var(--mocha); }
+
+  /* LANGUAGE DATA */
+  [data-en], [data-ar] { }
+
+  /* Scroll reveal */
+  .reveal { opacity: 0; transform: translateY(20px); transition: all 0.6s ease; }
+  .revealed { opacity: 1; transform: translateY(0); }
+
+  /* Decorative elements */
+  .deco-circle {
+    position: absolute; border-radius: 50%;
+    background: rgba(196,113,74,0.07);
+    pointer-events: none;
+  }
+
+  /* ===== DESIGNER PROFILE OVERLAY ===== */
+  .profile-overlay {
+    position: fixed; inset: 0; z-index: 200;
+    background: rgba(44,24,16,0.6);
+    backdrop-filter: blur(6px);
+    display: flex; align-items: center; justify-content: center;
+    padding: 1.5rem;
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.35s;
+  }
+  .profile-overlay.open { opacity: 1; pointer-events: all; }
+  .profile-modal {
+    background: var(--cream);
+    border-radius: 1.5rem; overflow: hidden;
+    width: 100%; max-width: 900px; max-height: 90vh;
+    overflow-y: auto; position: relative;
+    transform: translateY(30px) scale(0.97);
+    transition: transform 0.35s cubic-bezier(.22,.68,0,1.2);
+  }
+  .profile-overlay.open .profile-modal { transform: translateY(0) scale(1); }
+
+  .profile-header-img {
+    height: 260px; position: relative; overflow: hidden;
+  }
+  .profile-cover { width: 100%; height: 100%; object-fit: cover; }
+  .profile-close {
+    position: absolute; top: 1rem; right: 1rem;
+    background: rgba(253,250,246,0.9); border: none; border-radius: 50%;
+    width: 38px; height: 38px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.1rem; color: var(--mocha); transition: all 0.2s;
+    backdrop-filter: blur(4px);
+  }
+  .profile-close:hover { background: var(--mocha); color: var(--cream); }
+
+  .profile-body { padding: 2rem 2.5rem 3rem; }
+  .profile-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 2rem; }
+  .profile-identity {}
+  .profile-avatar {
+    width: 72px; height: 72px; border-radius: 50%;
+    border: 3px solid var(--cream);
+    margin-top: -2.5rem; margin-bottom: 0.8rem;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.6rem; font-weight: 300; color: var(--cream);
+  }
+  .profile-name { font-family: 'Cormorant Garamond', serif; font-size: 2rem; font-weight: 300; }
+  .profile-meta { font-size: 0.82rem; color: var(--gray-soft); margin-top: 0.3rem; }
+  .profile-rating-row { display: flex; align-items: center; gap: 1rem; margin-top: 0.6rem; }
+  .profile-actions { display: flex; gap: 0.8rem; align-items: center; padding-top: 1rem; }
+  .btn-contact {
+    background: var(--terra); color: white;
+    border: none; padding: 0.75rem 1.8rem; border-radius: 2rem;
+    font-size: 0.85rem; cursor: pointer; font-family: inherit; transition: all 0.2s;
+  }
+  .btn-contact:hover { background: var(--mocha); }
+  .btn-save {
+    background: none; color: var(--mocha);
+    border: 1px solid rgba(44,24,16,0.2); padding: 0.75rem 1.4rem; border-radius: 2rem;
+    font-size: 0.85rem; cursor: pointer; font-family: inherit; transition: all 0.2s;
+  }
+  .btn-save:hover { border-color: var(--terra); color: var(--terra); }
+
+  .profile-stats {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 1rem; margin-bottom: 2.5rem;
+    padding: 1.5rem; background: var(--sand); border-radius: 1rem;
+  }
+  .pstat { text-align: center; }
+  .pstat-num { font-family: 'Cormorant Garamond', serif; font-size: 1.8rem; font-weight: 300; color: var(--terra); }
+  .pstat-label { font-size: 0.72rem; color: var(--gray-soft); letter-spacing: 0.04em; margin-top: 0.2rem; }
+
+  .profile-section-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.4rem; font-weight: 300;
+    margin-bottom: 1.2rem; padding-bottom: 0.8rem;
+    border-bottom: 1px solid rgba(44,24,16,0.1);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+
+  /* PORTFOLIO GALLERY */
+  .portfolio-gallery {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.8rem;
+    margin-bottom: 2.5rem;
+  }
+  .gallery-item {
+    aspect-ratio: 4/3; border-radius: 0.75rem; overflow: hidden;
+    position: relative; cursor: pointer;
+    background: var(--sand-dark);
+  }
+  .gallery-item img {
+    width: 100%; height: 100%; object-fit: cover;
+    transition: transform 0.4s;
+  }
+  .gallery-item:hover img { transform: scale(1.06); }
+  .gallery-item .gallery-overlay {
+    position: absolute; inset: 0;
+    background: rgba(44,24,16,0); display: flex;
+    align-items: flex-end; padding: 0.8rem;
+    transition: background 0.3s;
+  }
+  .gallery-item:hover .gallery-overlay { background: rgba(44,24,16,0.3); }
+  .gallery-label {
+    font-size: 0.7rem; letter-spacing: 0.08em; text-transform: uppercase;
+    color: white; opacity: 0; transform: translateY(5px);
+    transition: all 0.3s; background: rgba(44,24,16,0.5);
+    padding: 0.2rem 0.6rem; border-radius: 1rem; backdrop-filter: blur(4px);
+  }
+  .gallery-item:hover .gallery-label { opacity: 1; transform: translateY(0); }
+
+  /* placeholder gallery items (CSS rooms) */
+  .gph { width:100%; height:100%; }
+  .gph-1 { background: linear-gradient(135deg,#C8B4A0 0%,#A8907A 100%); }
+  .gph-2 { background: linear-gradient(135deg,#A0B4C0 0%,#6E8A96 100%); }
+  .gph-3 { background: linear-gradient(135deg,#B8C4A8 0%,#90A880 100%); }
+  .gph-4 { background: linear-gradient(135deg,#C4A888 0%,#A08060 100%); }
+  .gph-5 { background: linear-gradient(135deg,#B0B8C8 0%,#8090A8 100%); }
+
+  /* UPLOAD ZONE */
+  .upload-zone {
+    border: 2px dashed rgba(44,24,16,0.18);
+    border-radius: 0.75rem; aspect-ratio: 4/3;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    cursor: pointer; transition: all 0.25s;
+    background: var(--sand);
+    position: relative; overflow: hidden;
+  }
+  .upload-zone:hover {
+    border-color: var(--terra);
+    background: rgba(196,113,74,0.05);
+  }
+  .upload-zone input[type=file] {
+    position: absolute; inset: 0; opacity: 0; cursor: pointer;
+  }
+  .upload-icon { font-size: 1.5rem; color: var(--terra); margin-bottom: 0.5rem; }
+  .upload-text { font-size: 0.78rem; color: var(--gray-soft); text-align: center; line-height: 1.5; }
+  .upload-text strong { color: var(--terra); display: block; }
+
+  /* IMAGE LIGHTBOX */
+  .lightbox {
+    position: fixed; inset: 0; z-index: 300;
+    background: rgba(20,10,5,0.92);
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0; pointer-events: none; transition: opacity 0.3s;
+  }
+  .lightbox.open { opacity: 1; pointer-events: all; }
+  .lightbox img {
+    max-width: 90vw; max-height: 85vh;
+    object-fit: contain; border-radius: 0.5rem;
+  }
+  .lightbox-close {
+    position: fixed; top: 1.2rem; right: 1.5rem;
+    color: rgba(253,250,246,0.7); font-size: 1.5rem;
+    cursor: pointer; background: none; border: none;
+    transition: color 0.2s; font-family: inherit;
+  }
+  .lightbox-close:hover { color: white; }
+
+  /* About & specialties */
+  .profile-about { font-size: 0.9rem; line-height: 1.8; color: var(--mocha-mid); margin-bottom: 2rem; }
+  .specialties { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 2.5rem; }
+  .spec-tag {
+    font-size: 0.78rem; padding: 0.35rem 0.9rem; border-radius: 2rem;
+    border: 1px solid rgba(44,24,16,0.15); color: var(--mocha-mid);
+  }
+  .spec-tag.highlight {
+    background: rgba(196,113,74,0.1); border-color: rgba(196,113,74,0.3);
+    color: var(--terra);
+  }
+
+  @media (max-width: 900px) {
+    nav { padding: 1rem 1.5rem; }
+    .nav-links { display: none; }
+    .hero { grid-template-columns: 1fr; min-height: auto; }
+    .hero-left { padding: 6rem 1.5rem 2rem; }
+    .hero-right { height: 300px; }
+    .how-grid, .section-join { grid-template-columns: 1fr; }
+    .designers-grid { grid-template-columns: 1fr 1fr; }
+    .projects-grid { grid-template-columns: 1fr; }
+    .categories-grid { grid-template-columns: 1fr 1fr; }
+    .cat-card:first-child { grid-column: span 2; min-height: 280px; }
+    .footer-grid { grid-template-columns: 1fr 1fr; gap: 2rem; }
+    .section-how, .section-designers, .section-projects,
+    .section-categories, .section-join { padding: 4rem 1.5rem; }
+    footer { padding: 3rem 1.5rem 2rem; }
+  }
+</style>
+</head>
+<body id="body">
+
+<!-- NAVIGATION -->
+<nav>
+  <a class="nav-logo" href="#">De<span>co</span></a>
+  <div class="nav-links">
+    <a href="#designers" data-en="Designers" data-ar="المصممون">Designers</a>
+    <a href="#projects" data-en="Projects" data-ar="المشاريع">Projects</a>
+    <a href="#categories" data-en="Categories" data-ar="التصنيفات">Categories</a>
+    <a href="#how" data-en="How It Works" data-ar="كيف يعمل">How It Works</a>
+  </div>
+  <div class="nav-actions">
+    <button class="lang-toggle" onclick="toggleLang()" id="langBtn">عربي</button>
+    <button class="btn-nav" data-en="Join Now" data-ar="انضم الآن">Join Now</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-left">
+    <div class="hero-tag" data-en="Saudi Arabia's Design Marketplace" data-ar="سوق التصميم الداخلي في السعودية">
+      Saudi Arabia's Design Marketplace
+    </div>
+    <h1>
+      <span data-en="Where <em>spaces</em><br>find their<br>story." data-ar="حيث تجد <em>المساحات</em><br>قصتها.">Where <em>spaces</em><br>find their<br>story.</span>
+    </h1>
+    <p class="hero-sub" data-en="Connect with Saudi Arabia's finest interior designers — or post your project and receive tailored proposals from verified professionals." data-ar="تواصل مع أفضل المصممين الداخليين في السعودية — أو انشر مشروعك وتلقّ عروضاً مخصصة من محترفين معتمدين.">
+      Connect with Saudi Arabia's finest interior designers — or post your project and receive tailored proposals from verified professionals.
+    </p>
+    <div class="search-bar">
+      <input type="text" id="searchInput" placeholder="Search designers, styles, or cities..." data-ph-en="Search designers, styles, or cities..." data-ph-ar="ابحث عن مصممين، أساليب، أو مدن...">
+      <button class="btn-search" data-en="Search" data-ar="بحث">Search</button>
+    </div>
+    <div class="hero-ctas">
+      <a href="#designers" class="btn-primary" data-en="Browse Designers" data-ar="تصفح المصممين">Browse Designers</a>
+      <a href="#projects" class="btn-outline" data-en="Post a Project" data-ar="انشر مشروعك">Post a Project</a>
+    </div>
+    <div class="hero-stats">
+      <div>
+        <div class="stat-num">480+</div>
+        <div class="stat-label" data-en="Verified Designers" data-ar="مصمم معتمد">Verified Designers</div>
+      </div>
+      <div>
+        <div class="stat-num">3,200+</div>
+        <div class="stat-label" data-en="Projects Completed" data-ar="مشروع منجز">Projects Completed</div>
+      </div>
+      <div>
+        <div class="stat-num">12</div>
+        <div class="stat-label" data-en="Saudi Cities" data-ar="مدينة سعودية">Saudi Cities</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero-right">
+    <div class="hero-mosaic">
+      <div class="mosaic-cell tall">
+        <div class="img-placeholder img-p1">
+          <svg class="room-shape" width="180" height="180" viewBox="0 0 180 180" fill="none">
+            <rect x="20" y="60" width="140" height="90" rx="4" stroke="rgba(253,250,246,0.3)" stroke-width="1"/>
+            <rect x="40" y="30" width="100" height="35" rx="2" stroke="rgba(253,250,246,0.3)" stroke-width="1"/>
+            <line x1="20" y1="150" x2="160" y2="150" stroke="rgba(253,250,246,0.2)" stroke-width="1"/>
+          </svg>
+          <span class="room-label" data-en="Living Room" data-ar="غرفة المعيشة">Living Room</span>
+        </div>
+      </div>
+      <div class="mosaic-cell">
+        <div class="img-placeholder img-p2">
+          <svg class="room-shape" width="120" height="120" viewBox="0 0 120 120" fill="none">
+            <rect x="15" y="40" width="90" height="60" rx="4" stroke="rgba(253,250,246,0.3)" stroke-width="1"/>
+            <ellipse cx="60" cy="60" rx="25" ry="18" stroke="rgba(253,250,246,0.25)" stroke-width="1"/>
+          </svg>
+          <span class="room-label" data-en="Bedroom" data-ar="غرفة النوم">Bedroom</span>
+        </div>
+      </div>
+      <div class="mosaic-cell">
+        <div class="img-placeholder img-p3">
+          <svg class="room-shape" width="120" height="120" viewBox="0 0 120 120" fill="none">
+            <rect x="15" y="30" width="90" height="70" rx="4" stroke="rgba(253,250,246,0.3)" stroke-width="1"/>
+            <rect x="25" y="50" width="30" height="40" rx="2" stroke="rgba(253,250,246,0.25)" stroke-width="1"/>
+            <rect x="65" y="50" width="30" height="40" rx="2" stroke="rgba(253,250,246,0.25)" stroke-width="1"/>
+          </svg>
+          <span class="room-label" data-en="Kitchen" data-ar="المطبخ">Kitchen</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="section-how reveal" id="how">
+  <div class="section-label" data-en="The Process" data-ar="كيف يعمل">The Process</div>
+  <h2 class="section-title" data-en="Simple for everyone" data-ar="بسيط للجميع">Simple for everyone</h2>
+  <p class="section-sub" data-en="Whether you're a homeowner looking for inspiration or a designer seeking clients — Deco connects you in minutes." data-ar="سواء كنت صاحب منزل يبحث عن الإلهام أو مصمماً يبحث عن عملاء — Deco يربطكم في دقائق.">
+    Whether you're a homeowner looking for inspiration or a designer seeking clients — Deco connects you in minutes.
+  </p>
+
+  <div class="how-grid">
+    <div class="how-side">
+      <h3>
+        <span data-en="For Customers" data-ar="للعملاء">For Customers</span>
+      </h3>
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <h4 data-en="Post your project" data-ar="انشر مشروعك">Post your project</h4>
+          <p data-en="Describe your space, style preferences, and budget. Takes less than 5 minutes." data-ar="صف مساحتك وأسلوبك المفضل وميزانيتك. لا يستغرق أكثر من 5 دقائق.">Describe your space, style preferences, and budget. Takes less than 5 minutes.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <h4 data-en="Receive proposals" data-ar="تلقّ العروض">Receive proposals</h4>
+          <p data-en="Verified designers from across Saudi Arabia send tailored proposals within 48 hours." data-ar="يرسل المصممون المعتمدون من جميع أنحاء السعودية عروضاً مخصصة خلال 48 ساعة.">Verified designers from across Saudi Arabia send tailored proposals within 48 hours.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <h4 data-en="Choose & collaborate" data-ar="اختر وتعاون">Choose & collaborate</h4>
+          <p data-en="Review portfolios, chat with designers, and choose who best fits your vision." data-ar="راجع المحافظ، تحدث مع المصممين، واختر من يناسب رؤيتك.">Review portfolios, chat with designers, and choose who best fits your vision.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-content">
+          <h4 data-en="Transform your space" data-ar="حوّل مساحتك">Transform your space</h4>
+          <p data-en="Track progress, approve milestones, and pay securely through the platform." data-ar="تابع التقدم، وافق على المراحل، وادفع بأمان عبر المنصة.">Track progress, approve milestones, and pay securely through the platform.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="how-side">
+      <h3>
+        <span data-en="For Designers" data-ar="للمصممين">For Designers</span>
+      </h3>
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <h4 data-en="Build your portfolio" data-ar="أنشئ محفظتك">Build your portfolio</h4>
+          <p data-en="Create a stunning profile showcasing your best work, style, and specialties." data-ar="أنشئ ملفاً شخصياً رائعاً يعرض أفضل أعمالك وأسلوبك وتخصصاتك.">Create a stunning profile showcasing your best work, style, and specialties.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <h4 data-en="Browse open projects" data-ar="تصفح المشاريع المفتوحة">Browse open projects</h4>
+          <p data-en="Filter by budget, city, and room type to find projects that match your expertise." data-ar="صفّ حسب الميزانية والمدينة ونوع الغرفة للعثور على المشاريع التي تناسب خبرتك.">Filter by budget, city, and room type to find projects that match your expertise.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <h4 data-en="Submit a proposal" data-ar="قدّم عرضاً">Submit a proposal</h4>
+          <p data-en="Send your concept, timeline, and quote directly to interested clients." data-ar="أرسل مفهومك والجدول الزمني وعرض الأسعار مباشرة إلى العملاء المهتمين.">Send your concept, timeline, and quote directly to interested clients.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-content">
+          <h4 data-en="Get paid, grow your brand" data-ar="احصل على أجرك وطوّر علامتك">Get paid, grow your brand</h4>
+          <p data-en="Secure payments, client reviews, and a growing reputation — all in one place." data-ar="مدفوعات آمنة وتقييمات العملاء وسمعة متنامية — كل ذلك في مكان واحد.">Secure payments, client reviews, and a growing reputation — all in one place.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DESIGNERS -->
+<section class="section-designers reveal" id="designers">
+  <div class="section-header">
+    <div>
+      <div class="section-label" data-en="Top Professionals" data-ar="أبرز المحترفين">Top Professionals</div>
+      <h2 class="section-title" data-en="Featured Designers" data-ar="مصممون مميزون">Featured Designers</h2>
+    </div>
+    <a href="#" class="view-all" data-en="View all 480+ →" data-ar="عرض الكل +480 ←">View all 480+ →</a>
+  </div>
+
+  <div class="designers-grid">
+    <!-- Designer 1 -->
+    <div class="designer-card">
+      <div class="designer-portfolio">
+        <div class="port-img port-d1">
+          <div class="port-room">
+            <svg width="120" height="80" viewBox="0 0 120 80" fill="none">
+              <rect x="10" y="20" width="100" height="55" rx="3" stroke="rgba(253,250,246,0.25)" stroke-width="1"/>
+              <rect x="20" y="30" width="35" height="35" rx="2" stroke="rgba(253,250,246,0.2)" stroke-width="1"/>
+              <rect x="65" y="35" width="35" height="28" rx="2" stroke="rgba(253,250,246,0.2)" stroke-width="1"/>
+            </svg>
+          </div>
+        </div>
+        <div class="badge-verified" data-en="Verified" data-ar="معتمد">Verified</div>
+      </div>
+      <div class="designer-info">
+        <div class="designer-name" data-en="Nora Al-Rashidi" data-ar="نورة الراشدي">Nora Al-Rashidi</div>
+        <div class="designer-specialty" data-en="Contemporary & Minimalist · Riyadh" data-ar="معاصر وبسيط · الرياض">Contemporary & Minimalist · Riyadh</div>
+        <div class="designer-meta">
+          <div class="rating">
+            <span class="stars">★★★★★</span>
+            <span>4.9</span>
+            <span class="rating-count">(128 reviews)</span>
+          </div>
+          <div class="price-range" data-en="From SAR 15,000" data-ar="من 15,000 ريال">From SAR 15,000</div>
+        </div>
+        <div class="designer-tags">
+          <span class="tag" data-en="Minimalist" data-ar="بسيط">Minimalist</span>
+          <span class="tag" data-en="Residential" data-ar="سكني">Residential</span>
+          <span class="tag" data-en="3D Rendering" data-ar="تصميم ثلاثي الأبعاد">3D Rendering</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Designer 2 -->
+    <div class="designer-card">
+      <div class="designer-portfolio">
+        <div class="port-img port-d2">
+          <div class="port-room">
+            <svg width="120" height="80" viewBox="0 0 120 80" fill="none">
+              <ellipse cx="60" cy="45" rx="40" ry="25" stroke="rgba(253,250,246,0.25)" stroke-width="1"/>
+              <rect x="15" y="15" width="90" height="50" rx="6" stroke="rgba(253,250,246,0.2)" stroke-width="1"/>
+            </svg>
+          </div>
+        </div>
+        <div class="badge-verified" data-en="Verified" data-ar="معتمد">Verified</div>
+      </div>
+      <div class="designer-info">
+        <div class="designer-name" data-en="Khalid Al-Dosari" data-ar="خالد الدوسري">Khalid Al-Dosari</div>
+        <div class="designer-specialty" data-en="Luxury & Classical · Jeddah" data-ar="فاخر وكلاسيكي · جدة">Luxury & Classical · Jeddah</div>
+        <div class="designer-meta">
+          <div class="rating">
+            <span class="stars">★★★★★</span>
+            <span>4.8</span>
+            <span class="rating-count">(94 reviews)</span>
+          </div>
+          <div class="price-range" data-en="From SAR 28,000" data-ar="من 28,000 ريال">From SAR 28,000</div>
+        </div>
+        <div class="designer-tags">
+          <span class="tag" data-en="Luxury" data-ar="فاخر">Luxury</span>
+          <span class="tag" data-en="Classical" data-ar="كلاسيكي">Classical</span>
+          <span class="tag" data-en="Full Service" data-ar="خدمة شاملة">Full Service</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Designer 3 -->
+    <div class="designer-card">
+      <div class="designer-portfolio">
+        <div class="port-img port-d3">
+          <div class="port-room">
+            <svg width="120" height="80" viewBox="0 0 120 80" fill="none">
+              <rect x="10" y="10" width="100" height="60" rx="3" stroke="rgba(253,250,246,0.25)" stroke-width="1"/>
+              <line x1="60" y1="10" x2="60" y2="70" stroke="rgba(253,250,246,0.15)" stroke-width="1"/>
+              <circle cx="60" cy="40" r="15" stroke="rgba(253,250,246,0.2)" stroke-width="1"/>
+            </svg>
+          </div>
+        </div>
+        <div class="badge-verified" data-en="Verified" data-ar="معتمد">Verified</div>
+      </div>
+      <div class="designer-info">
+        <div class="designer-name" data-en="Sara Al-Otaibi" data-ar="سارة العتيبي">Sara Al-Otaibi</div>
+        <div class="designer-specialty" data-en="Scandinavian & Boho · Dammam" data-ar="اسكندنافي وبوهو · الدمام">Scandinavian & Boho · Dammam</div>
+        <div class="designer-meta">
+          <div class="rating">
+            <span class="stars">★★★★★</span>
+            <span>4.9</span>
+            <span class="rating-count">(67 reviews)</span>
+          </div>
+          <div class="price-range" data-en="From SAR 10,000" data-ar="من 10,000 ريال">From SAR 10,000</div>
+        </div>
+        <div class="designer-tags">
+          <span class="tag" data-en="Scandinavian" data-ar="اسكندنافي">Scandinavian</span>
+          <span class="tag" data-en="Boho" data-ar="بوهو">Boho</span>
+          <span class="tag" data-en="Budget-Friendly" data-ar="اقتصادي">Budget-Friendly</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section class="section-projects reveal" id="projects">
+  <div class="section-label" data-en="Open for Bids" data-ar="مفتوح للعروض">Open for Bids</div>
+  <h2 class="section-title" data-en="Recent Projects" data-ar="المشاريع الحديثة">Recent Projects</h2>
+  <p class="section-sub" data-en="Clients across Saudi Arabia are looking for talented designers right now." data-ar="يبحث العملاء في جميع أنحاء السعودية عن مصممين موهوبين الآن.">
+    Clients across Saudi Arabia are looking for talented designers right now.
+  </p>
+
+  <div class="projects-grid">
+    <div class="project-card">
+      <div class="project-header">
+        <span class="project-type" data-en="Full Apartment" data-ar="شقة كاملة">Full Apartment</span>
+        <div class="project-budget">SAR 45,000</div>
+      </div>
+      <div class="project-title" data-en="Modern Living Room & Master Bedroom" data-ar="غرفة معيشة حديثة وغرفة نوم رئيسية">Modern Living Room & Master Bedroom</div>
+      <div class="project-desc" data-en="Looking for a minimalist designer to redesign my 180m² apartment in north Riyadh. Prefer neutral palette with warm wood accents. Full 3D rendering required before execution." data-ar="أبحث عن مصمم بسيط لإعادة تصميم شقتي 180م² في شمال الرياض. أفضّل ألواناً محايدة مع لمسات خشبية دافئة. يُشترط تصميم ثلاثي الأبعاد قبل التنفيذ.">
+        Looking for a minimalist designer to redesign my 180m² apartment in north Riyadh. Prefer neutral palette with warm wood accents.
+      </div>
+      <div class="project-footer">
+        <div class="project-location" data-en="North Riyadh" data-ar="شمال الرياض">North Riyadh</div>
+        <div class="bid-count" data-en="7 proposals received" data-ar="7 عروض مستلمة">7 proposals received</div>
+      </div>
+    </div>
+
+    <div class="project-card">
+      <div class="project-header">
+        <span class="project-type" data-en="Commercial" data-ar="تجاري">Commercial</span>
+        <div class="project-budget">SAR 120,000</div>
+      </div>
+      <div class="project-title" data-en="Café Interior Design — Jeddah" data-ar="تصميم داخلي لمقهى — جدة">Café Interior Design — Jeddah</div>
+      <div class="project-desc" data-en="Opening a specialty coffee shop in Al-Balad district. Need a designer who can blend Hijazi heritage with contemporary café aesthetics. 280m² space." data-ar="افتتاح مقهى متخصص في حي البلد. أحتاج مصمماً يمزج التراث الحجازي مع جماليات المقاهي المعاصرة. مساحة 280م².">
+        Opening a specialty coffee shop in Al-Balad. Need a designer who blends Hijazi heritage with contemporary café aesthetics.
+      </div>
+      <div class="project-footer">
+        <div class="project-location" data-en="Al-Balad, Jeddah" data-ar="البلد، جدة">Al-Balad, Jeddah</div>
+        <div class="bid-count" data-en="12 proposals received" data-ar="12 عرضاً مستلماً">12 proposals received</div>
+      </div>
+    </div>
+
+    <div class="project-card">
+      <div class="project-header">
+        <span class="project-type" data-en="Villa" data-ar="فيلا">Villa</span>
+        <div class="project-budget">SAR 200,000</div>
+      </div>
+      <div class="project-title" data-en="Full Villa Design — 5 Bedrooms" data-ar="تصميم فيلا كاملة — 5 غرف نوم">Full Villa Design — 5 Bedrooms</div>
+      <div class="project-desc" data-en="Brand new villa in Al-Khobar. Looking for a luxury designer specializing in contemporary Saudi style. Includes outdoor landscape design." data-ar="فيلا جديدة في الخبر. أبحث عن مصمم فاخر متخصص في الأسلوب السعودي المعاصر. يشمل تصميم الحديقة الخارجية.">
+        Brand new villa in Al-Khobar. Luxury designer needed for contemporary Saudi style. Includes outdoor landscape.
+      </div>
+      <div class="project-footer">
+        <div class="project-location" data-en="Al-Khobar" data-ar="الخبر">Al-Khobar</div>
+        <div class="bid-count" data-en="3 proposals received" data-ar="3 عروض مستلمة">3 proposals received</div>
+      </div>
+    </div>
+
+    <div class="project-card">
+      <div class="project-header">
+        <span class="project-type" data-en="Office" data-ar="مكتب">Office</span>
+        <div class="project-budget">SAR 65,000</div>
+      </div>
+      <div class="project-title" data-en="Corporate Office Redesign — 350m²" data-ar="إعادة تصميم مكتب شركة — 350م²">Corporate Office Redesign — 350m²</div>
+      <div class="project-desc" data-en="Fintech startup seeking a modern, productivity-focused office design. Open floor plan with private pods, meeting rooms, and a social lounge area." data-ar="شركة ناشئة في مجال التقنية المالية تسعى لتصميم مكتبي حديث يركز على الإنتاجية. مخطط مفتوح مع كبائن خاصة وقاعات اجتماعات ومنطقة استراحة.">
+        Fintech startup seeking modern, productivity-focused office design. Open floor plan with private pods and social lounge.
+      </div>
+      <div class="project-footer">
+        <div class="project-location" data-en="KAFD, Riyadh" data-ar="مركز الملك عبدالله المالي، الرياض">KAFD, Riyadh</div>
+        <div class="bid-count" data-en="5 proposals received" data-ar="5 عروض مستلمة">5 proposals received</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="post-project">
+    <p data-en="Have a project in mind? Post it for free and receive proposals from verified Saudi designers." data-ar="هل لديك مشروع في ذهنك؟ انشره مجاناً وتلقّ عروضاً من مصممين سعوديين معتمدين.">
+      Have a project in mind? Post it for free and receive proposals from verified Saudi designers.
+    </p>
+    <button class="btn-primary" data-en="Post a Project for Free →" data-ar="انشر مشروعاً مجاناً ←">Post a Project for Free →</button>
+  </div>
+</section>
+
+<!-- CATEGORIES -->
+<section class="section-categories reveal" id="categories">
+  <div class="section-label" data-en="Browse by Space" data-ar="تصفح حسب المساحة">Browse by Space</div>
+  <h2 class="section-title" data-en="Every room, expertly designed" data-ar="كل غرفة، مصممة باحتراف">Every room, expertly designed</h2>
+
+  <div class="categories-grid">
+    <div class="cat-card">
+      <div class="cat-bg cat-living"></div>
+      <div class="cat-overlay">
+        <div class="cat-name" data-en="Living Room" data-ar="غرفة المعيشة">Living Room</div>
+        <div class="cat-count" data-en="142 designers" data-ar="142 مصمم">142 designers</div>
+      </div>
+    </div>
+    <div class="cat-card">
+      <div class="cat-bg cat-bedroom"></div>
+      <div class="cat-overlay">
+        <div class="cat-name" data-en="Bedroom" data-ar="غرفة النوم">Bedroom</div>
+        <div class="cat-count" data-en="118 designers" data-ar="118 مصمم">118 designers</div>
+      </div>
+    </div>
+    <div class="cat-card">
+      <div class="cat-bg cat-kitchen"></div>
+      <div class="cat-overlay">
+        <div class="cat-name" data-en="Kitchen" data-ar="المطبخ">Kitchen</div>
+        <div class="cat-count" data-en="89 designers" data-ar="89 مصمم">89 designers</div>
+      </div>
+    </div>
+    <div class="cat-card">
+      <div class="cat-bg cat-office"></div>
+      <div class="cat-overlay">
+        <div class="cat-name" data-en="Home Office" data-ar="مكتب منزلي">Home Office</div>
+        <div class="cat-count" data-en="74 designers" data-ar="74 مصمم">74 designers</div>
+      </div>
+    </div>
+    <div class="cat-card">
+      <div class="cat-bg cat-bath"></div>
+      <div class="cat-overlay">
+        <div class="cat-name" data-en="Bathroom" data-ar="الحمام">Bathroom</div>
+        <div class="cat-count" data-en="57 designers" data-ar="57 مصمم">57 designers</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- JOIN CTA -->
+<section class="section-join reveal">
+  <div class="join-card designer-side">
+    <div class="join-icon">✦</div>
+    <h2 data-en="Are you a designer?" data-ar="هل أنت مصمم؟">Are you a designer?</h2>
+    <p data-en="Join Saudi Arabia's fastest-growing design marketplace and connect with clients who value your craft." data-ar="انضم إلى أسرع سوق تصميم ينمو في السعودية وتواصل مع عملاء يقدّرون فنّك.">
+      Join Saudi Arabia's fastest-growing design marketplace and connect with clients who value your craft.
+    </p>
+    <ul class="join-perks">
+      <li><span class="perk-check">✓</span> <span data-en="Free portfolio listing" data-ar="قائمة محفظة مجانية">Free portfolio listing</span></li>
+      <li><span class="perk-check">✓</span> <span data-en="Access to verified client projects" data-ar="وصول إلى مشاريع عملاء معتمدة">Access to verified client projects</span></li>
+      <li><span class="perk-check">✓</span> <span data-en="Secure payment protection" data-ar="حماية دفع آمنة">Secure payment protection</span></li>
+      <li><span class="perk-check">✓</span> <span data-en="Build your reputation with reviews" data-ar="بناء سمعتك بالتقييمات">Build your reputation with reviews</span></li>
+    </ul>
+    <button class="btn-join-designer" data-en="Apply as a Designer →" data-ar="سجّل كمصمم ←">Apply as a Designer →</button>
+  </div>
+
+  <div class="join-card client-side">
+    <div class="join-icon">◎</div>
+    <h2 data-en="Ready to transform your space?" data-ar="مستعد لتحويل مساحتك؟">Ready to transform your space?</h2>
+    <p data-en="Post your project for free and receive curated proposals from Saudi Arabia's best interior designers." data-ar="انشر مشروعك مجاناً وتلقّ عروضاً منتقاة من أفضل المصممين الداخليين في السعودية.">
+      Post your project for free and receive curated proposals from Saudi Arabia's best interior designers.
+    </p>
+    <ul class="join-perks">
+      <li><span class="perk-check">✓</span> <span data-en="Free to post, no hidden fees" data-ar="مجاني للنشر، لا رسوم خفية">Free to post, no hidden fees</span></li>
+      <li><span class="perk-check">✓</span> <span data-en="Receive proposals within 48 hours" data-ar="تلقّ عروضاً خلال 48 ساعة">Receive proposals within 48 hours</span></li>
+      <li><span class="perk-check">✓</span> <span data-en="Compare portfolios & reviews" data-ar="قارن المحافظ والتقييمات">Compare portfolios & reviews</span></li>
+      <li><span class="perk-check">✓</span> <span data-en="Pay only when you're satisfied" data-ar="ادفع فقط عند رضاك">Pay only when you're satisfied</span></li>
+    </ul>
+    <button class="btn-join-client" data-en="Post Your Project →" data-ar="انشر مشروعك ←">Post Your Project →</button>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <a class="nav-logo" href="#">De<span style="color:var(--terra)">co</span></a>
+      <p data-en="Saudi Arabia's marketplace connecting talented interior designers with clients across the Kingdom." data-ar="سوق السعودية الذي يربط المصممين الداخليين الموهوبين بالعملاء في جميع أنحاء المملكة.">
+        Saudi Arabia's marketplace connecting talented interior designers with clients across the Kingdom.
+      </p>
+    </div>
+    <div class="footer-col">
+      <h5 data-en="For Clients" data-ar="للعملاء">For Clients</h5>
+      <a href="#" data-en="Post a Project" data-ar="انشر مشروعاً">Post a Project</a>
+      <a href="#" data-en="Browse Designers" data-ar="تصفح المصممين">Browse Designers</a>
+      <a href="#" data-en="How It Works" data-ar="كيف يعمل">How It Works</a>
+      <a href="#" data-en="Client Reviews" data-ar="تقييمات العملاء">Client Reviews</a>
+    </div>
+    <div class="footer-col">
+      <h5 data-en="For Designers" data-ar="للمصممين">For Designers</h5>
+      <a href="#" data-en="Join as Designer" data-ar="انضم كمصمم">Join as Designer</a>
+      <a href="#" data-en="Browse Projects" data-ar="تصفح المشاريع">Browse Projects</a>
+      <a href="#" data-en="Pricing" data-ar="الأسعار">Pricing</a>
+      <a href="#" data-en="Success Stories" data-ar="قصص نجاح">Success Stories</a>
+    </div>
+    <div class="footer-col">
+      <h5 data-en="Company" data-ar="الشركة">Company</h5>
+      <a href="#" data-en="About Deco" data-ar="عن Deco">About Deco</a>
+      <a href="#" data-en="Blog" data-ar="المدونة">Blog</a>
+      <a href="#" data-en="Privacy Policy" data-ar="سياسة الخصوصية">Privacy Policy</a>
+      <a href="#" data-en="Contact Us" data-ar="تواصل معنا">Contact Us</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span data-en="© 2025 Deco. All rights reserved." data-ar="© 2025 Deco. جميع الحقوق محفوظة.">© 2025 Deco. All rights reserved.</span>
+    <div class="footer-langs">
+      <a href="#" onclick="setLang('en'); return false;">English</a>
+      <a href="#" onclick="setLang('ar'); return false;">العربية</a>
+    </div>
+  </div>
+</footer>
+
+<!-- DESIGNER PROFILE OVERLAY -->
+<div class="profile-overlay" id="profileOverlay" onclick="closeProfileOnBg(event)">
+  <div class="profile-modal" id="profileModal">
+    <div class="profile-header-img">
+      <div class="gph gph-1" id="profileCover" style="height:100%"></div>
+      <button class="profile-close" onclick="closeProfile()">✕</button>
+    </div>
+    <div class="profile-body">
+      <div class="profile-top">
+        <div class="profile-identity">
+          <div class="profile-avatar" id="profileAvatar" style="background:var(--terra)">N</div>
+          <div class="profile-name" id="profileName">Nora Al-Rashidi</div>
+          <div class="profile-meta" id="profileMeta">Contemporary & Minimalist · Riyadh</div>
+          <div class="profile-rating-row">
+            <span style="color:var(--gold);font-size:0.85rem">★★★★★</span>
+            <span style="font-size:0.85rem" id="profileRating">4.9 (128 reviews)</span>
+            <span class="badge-verified" style="position:static;font-size:0.68rem" id="profileVerified">Verified</span>
+          </div>
+        </div>
+        <div class="profile-actions">
+          <button class="btn-contact" id="profileContactBtn" data-en="Contact Designer" data-ar="تواصل مع المصمم">Contact Designer</button>
+          <button class="btn-save" data-en="♡ Save" data-ar="♡ حفظ">♡ Save</button>
+        </div>
+      </div>
+
+      <div class="profile-stats">
+        <div class="pstat">
+          <div class="pstat-num" id="pStat1">47</div>
+          <div class="pstat-label" data-en="Projects Done" data-ar="مشاريع منجزة">Projects Done</div>
+        </div>
+        <div class="pstat">
+          <div class="pstat-num" id="pStat2">98%</div>
+          <div class="pstat-label" data-en="Satisfaction" data-ar="رضا العملاء">Satisfaction</div>
+        </div>
+        <div class="pstat">
+          <div class="pstat-num" id="pStat3">4.9</div>
+          <div class="pstat-label" data-en="Avg. Rating" data-ar="متوسط التقييم">Avg. Rating</div>
+        </div>
+        <div class="pstat">
+          <div class="pstat-num" id="pStat4">3 yrs</div>
+          <div class="pstat-label" data-en="On Deco" data-ar="على Deco">On Deco</div>
+        </div>
+      </div>
+
+      <div class="profile-section-title">
+        <span data-en="About" data-ar="نبذة">About</span>
+      </div>
+      <p class="profile-about" id="profileAbout">
+        I specialize in creating serene, functional spaces that balance clean lines with warmth. With over 7 years of experience in residential and hospitality design, I bring a deeply personal approach to every project — listening first, designing second.
+      </p>
+      <div class="specialties" id="profileSpecialties">
+        <span class="spec-tag highlight">Minimalist</span>
+        <span class="spec-tag highlight">Contemporary</span>
+        <span class="spec-tag">Residential</span>
+        <span class="spec-tag">3D Rendering</span>
+        <span class="spec-tag">Space Planning</span>
+        <span class="spec-tag">Lighting Design</span>
+      </div>
+
+      <div class="profile-section-title">
+        <span data-en="Portfolio" data-ar="المحفظة">Portfolio</span>
+        <span style="font-size:0.78rem;color:var(--gray-soft);font-family:'DM Sans',sans-serif" id="photoCount">5 photos</span>
+      </div>
+
+      <div class="portfolio-gallery" id="portfolioGallery">
+        <!-- Placeholder photos -->
+        <div class="gallery-item" onclick="openLightbox(this)">
+          <div class="gph gph-1"></div>
+          <div class="gallery-overlay"><span class="gallery-label" data-en="Living Room" data-ar="غرفة المعيشة">Living Room</span></div>
+        </div>
+        <div class="gallery-item" onclick="openLightbox(this)">
+          <div class="gph gph-2"></div>
+          <div class="gallery-overlay"><span class="gallery-label" data-en="Master Bedroom" data-ar="غرفة النوم الرئيسية">Master Bedroom</span></div>
+        </div>
+        <div class="gallery-item" onclick="openLightbox(this)">
+          <div class="gph gph-3"></div>
+          <div class="gallery-overlay"><span class="gallery-label" data-en="Kitchen" data-ar="المطبخ">Kitchen</span></div>
+        </div>
+        <div class="gallery-item" onclick="openLightbox(this)">
+          <div class="gph gph-4"></div>
+          <div class="gallery-overlay"><span class="gallery-label" data-en="Dining Area" data-ar="منطقة الطعام">Dining Area</span></div>
+        </div>
+        <div class="gallery-item" onclick="openLightbox(this)">
+          <div class="gph gph-5"></div>
+          <div class="gallery-overlay"><span class="gallery-label" data-en="Home Office" data-ar="مكتب منزلي">Home Office</span></div>
+        </div>
+        <!-- Upload zone -->
+        <label class="upload-zone" title="Upload photo">
+          <input type="file" accept="image/*" multiple onchange="handleUpload(event)">
+          <div class="upload-icon">＋</div>
+          <div class="upload-text"><strong data-en="Add Photos" data-ar="أضف صوراً">Add Photos</strong><span data-en="JPG, PNG, WebP" data-ar="JPG, PNG, WebP">JPG, PNG, WebP</span></div>
+        </label>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox" onclick="closeLightbox()">
+  <button class="lightbox-close" onclick="closeLightbox()">✕</button>
+  <img id="lightboxImg" src="" alt="Portfolio image">
+</div>
+
+<script>
+let currentLang = 'en';
+
+// ---- DESIGNERS DATA ----
+const designers = [
+  {
+    name: { en: 'Nora Al-Rashidi', ar: 'نورة الراشدي' },
+    specialty: { en: 'Contemporary & Minimalist · Riyadh', ar: 'معاصر وبسيط · الرياض' },
+    about: { en: 'I specialize in creating serene, functional spaces that balance clean lines with warmth. With over 7 years of experience in residential and hospitality design, I bring a deeply personal approach to every project.', ar: 'أتخصص في إنشاء مساحات هادئة ووظيفية تجمع بين الخطوط النظيفة والدفء. بخبرة تزيد على 7 سنوات في التصميم السكني والفندقي، أقدم نهجاً شخصياً لكل مشروع.' },
+    rating: '4.9 (128 reviews)',
+    avatar: 'N', cover: 'gph-1', bg: '#C4714A',
+    stats: ['47','98%','4.9','3 yrs'],
+    tags: ['Minimalist','Contemporary','Residential','3D Rendering','Space Planning','Lighting Design'],
+    photos: [
+      {cls:'gph-1', label:{en:'Living Room',ar:'غرفة المعيشة'}},
+      {cls:'gph-2', label:{en:'Master Bedroom',ar:'غرفة النوم الرئيسية'}},
+      {cls:'gph-3', label:{en:'Kitchen',ar:'المطبخ'}},
+      {cls:'gph-4', label:{en:'Dining Area',ar:'منطقة الطعام'}},
+      {cls:'gph-5', label:{en:'Home Office',ar:'مكتب منزلي'}},
+    ]
+  },
+  {
+    name: { en: 'Khalid Al-Dosari', ar: 'خالد الدوسري' },
+    specialty: { en: 'Luxury & Classical · Jeddah', ar: 'فاخر وكلاسيكي · جدة' },
+    about: { en: 'Passionate about creating opulent spaces that honor tradition while embracing modern comfort. I have completed over 60 high-end residential and commercial projects across the Kingdom, with a signature style that merges Arabesque heritage with contemporary luxury.', ar: 'شغوف بإنشاء مساحات فاخرة تحترم التراث مع استيعاب الراحة الحديثة. أنجزت أكثر من 60 مشروعاً سكنياً وتجارياً راقياً في جميع أنحاء المملكة.' },
+    rating: '4.8 (94 reviews)',
+    avatar: 'K', cover: 'gph-2', bg: '#6E8A96',
+    stats: ['63','96%','4.8','5 yrs'],
+    tags: ['Luxury','Classical','Arabesque','Full Service','Commercial','Villa Design'],
+    photos: [
+      {cls:'gph-2', label:{en:'Grand Salon',ar:'الصالة الكبرى'}},
+      {cls:'gph-4', label:{en:'Master Suite',ar:'الجناح الرئيسي'}},
+      {cls:'gph-1', label:{en:'Reception Hall',ar:'قاعة الاستقبال'}},
+      {cls:'gph-5', label:{en:'Library',ar:'المكتبة'}},
+    ]
+  },
+  {
+    name: { en: 'Sara Al-Otaibi', ar: 'سارة العتيبي' },
+    specialty: { en: 'Scandinavian & Boho · Dammam', ar: 'اسكندنافي وبوهو · الدمام' },
+    about: { en: 'My design philosophy is all about bringing nature indoors — natural textures, plants, soft light, and layered warmth. I love working with first-time homeowners and young families who want a stylish yet livable space on a smart budget.', ar: 'فلسفتي في التصميم تدور حول إدخال الطبيعة للداخل — ملمس طبيعي ونباتات وضوء ناعم ودفء متعدد الطبقات. أحب العمل مع أصحاب المنازل الجدد والعائلات الشابة.' },
+    rating: '4.9 (67 reviews)',
+    avatar: 'S', cover: 'gph-3', bg: '#90A880',
+    stats: ['31','99%','4.9','2 yrs'],
+    tags: ['Scandinavian','Boho','Natural Materials','Budget-Friendly','Family Spaces','Color Consulting'],
+    photos: [
+      {cls:'gph-3', label:{en:'Living Room',ar:'غرفة المعيشة'}},
+      {cls:'gph-5', label:{en:'Kids Room',ar:'غرفة الأطفال'}},
+      {cls:'gph-1', label:{en:'Open Kitchen',ar:'مطبخ مفتوح'}},
+    ]
+  }
+];
+
+// Track per-designer uploaded photos
+const uploadedPhotos = { 0: [], 1: [], 2: [] };
+let activeDesigner = 0;
+
+function openProfile(idx) {
+  activeDesigner = idx;
+  const d = designers[idx];
+  const isAr = currentLang === 'ar';
+
+  document.getElementById('profileName').textContent = d.name[currentLang];
+  document.getElementById('profileMeta').textContent = d.specialty[currentLang];
+  document.getElementById('profileRating').textContent = d.rating;
+  document.getElementById('profileAbout').textContent = d.about[currentLang];
+  document.getElementById('profileAvatar').textContent = d.avatar;
+  document.getElementById('profileAvatar').style.background = d.bg;
+
+  // Cover
+  const cover = document.getElementById('profileCover');
+  cover.className = 'gph ' + d.cover;
+  cover.style.height = '100%';
+
+  // Stats
+  const statEls = document.querySelectorAll('.pstat-num');
+  d.stats.forEach((s, i) => { if (statEls[i]) statEls[i].textContent = s; });
+
+  // Tags
+  const specEl = document.getElementById('profileSpecialties');
+  specEl.innerHTML = d.tags.map((t, i) =>
+    `<span class="spec-tag${i < 2 ? ' highlight' : ''}">${t}</span>`
+  ).join('');
+
+  renderGallery(idx);
+  document.getElementById('profileOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function renderGallery(idx) {
+  const d = designers[idx];
+  const isAr = currentLang === 'ar';
+  const gallery = document.getElementById('portfolioGallery');
+  const allPhotos = [
+    ...d.photos.map(p => ({ type: 'placeholder', cls: p.cls, label: p.label[currentLang] })),
+    ...uploadedPhotos[idx].map(src => ({ type: 'uploaded', src, label: isAr ? 'صورة مرفوعة' : 'Uploaded' }))
+  ];
+
+  const total = allPhotos.length;
+  document.getElementById('photoCount').textContent = isAr ? `${total} صور` : `${total} photos`;
+
+  gallery.innerHTML = allPhotos.map((p, i) => {
+    if (p.type === 'uploaded') {
+      return `<div class="gallery-item" onclick="openLightboxSrc('${p.src}')">
+        <img src="${p.src}" style="width:100%;height:100%;object-fit:cover;">
+        <div class="gallery-overlay"><span class="gallery-label">${p.label}</span></div>
+      </div>`;
+    } else {
+      return `<div class="gallery-item" onclick="openLightboxPlaceholder(${i})">
+        <div class="gph ${p.cls}" style="width:100%;height:100%"></div>
+        <div class="gallery-overlay"><span class="gallery-label">${p.label}</span></div>
+      </div>`;
+    }
+  }).join('') + `
+    <label class="upload-zone" title="${isAr ? 'أضف صورة' : 'Add photo'}">
+      <input type="file" accept="image/*" multiple onchange="handleUpload(event)">
+      <div class="upload-icon">＋</div>
+      <div class="upload-text">
+        <strong>${isAr ? 'أضف صوراً' : 'Add Photos'}</strong>
+        <span>JPG, PNG, WebP</span>
+      </div>
+    </label>`;
+}
+
+function handleUpload(event) {
+  const files = Array.from(event.target.files);
+  let loaded = 0;
+  files.forEach(file => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      uploadedPhotos[activeDesigner].push(e.target.result);
+      loaded++;
+      if (loaded === files.length) renderGallery(activeDesigner);
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+function openLightboxSrc(src) {
+  document.getElementById('lightboxImg').src = src;
+  document.getElementById('lightboxImg').style.display = 'block';
+  document.getElementById('lightbox').classList.add('open');
+}
+
+function openLightboxPlaceholder(idx) {
+  // For placeholder items, show a nice message
+  // Lightbox only works with real images - skip for CSS rooms
+}
+
+function closeLightbox() {
+  document.getElementById('lightbox').classList.remove('open');
+  document.getElementById('lightboxImg').src = '';
+}
+
+function closeProfile() {
+  document.getElementById('profileOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function closeProfileOnBg(e) {
+  if (e.target === document.getElementById('profileOverlay')) closeProfile();
+}
+
+// Make designer cards clickable
+document.querySelectorAll('.designer-card').forEach((card, i) => {
+  card.addEventListener('click', () => openProfile(i));
+});
+
+// ---- LANGUAGE ----
+function setLang(lang) {
+  currentLang = lang;
+  const isAr = lang === 'ar';
+  document.documentElement.setAttribute('lang', lang);
+  document.documentElement.setAttribute('dir', isAr ? 'rtl' : 'ltr');
+
+  document.querySelectorAll('[data-en]').forEach(el => {
+    const val = isAr ? el.getAttribute('data-ar') : el.getAttribute('data-en');
+    if (val) el.innerHTML = val;
+  });
+
+  document.querySelectorAll('[data-ph-en]').forEach(el => {
+    el.placeholder = isAr ? el.getAttribute('data-ph-ar') : el.getAttribute('data-ph-en');
+  });
+
+  document.getElementById('langBtn').textContent = isAr ? 'English' : 'عربي';
+}
+
+function toggleLang() {
+  setLang(currentLang === 'en' ? 'ar' : 'en');
+}
+
+// Escape key closes overlays
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') { closeProfile(); closeLightbox(); }
+});
+
+// Scroll reveal
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('revealed'); });
+}, { threshold: 0.1 });
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
