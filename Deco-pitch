@@ -1,0 +1,997 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Deco — Investor Pitch Deck</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+:root {
+  --mocha: #2C1810;
+  --terra: #C4714A;
+  --sand: #F5EFE6;
+  --cream: #FDFAF6;
+  --gold: #B8924A;
+  --mid: #5A3E32;
+  --soft: #9A8F87;
+}
+html, body { width:100%; height:100%; overflow:hidden; font-family:'DM Sans',sans-serif; background:#111; }
+
+/* SLIDE CONTAINER */
+.deck { width:100%; height:100%; position:relative; }
+.slide {
+  position:absolute; inset:0;
+  display:flex; flex-direction:column;
+  opacity:0; pointer-events:none;
+  transition:opacity 0.5s ease, transform 0.5s ease;
+  transform:translateX(40px);
+  overflow:hidden;
+}
+.slide.active { opacity:1; pointer-events:all; transform:translateX(0); }
+.slide.prev { opacity:0; transform:translateX(-40px); }
+
+/* NAVIGATION */
+.nav-bar {
+  position:fixed; bottom:2rem; left:50%; transform:translateX(-50%);
+  display:flex; align-items:center; gap:1rem; z-index:100;
+  background:rgba(44,24,16,0.85); backdrop-filter:blur(12px);
+  padding:0.7rem 1.2rem; border-radius:3rem;
+  border:1px solid rgba(196,113,74,0.3);
+}
+.nav-btn {
+  background:none; border:1px solid rgba(253,250,246,0.2);
+  color:rgba(253,250,246,0.7); width:32px; height:32px;
+  border-radius:50%; cursor:pointer; font-size:0.85rem;
+  display:flex; align-items:center; justify-content:center;
+  transition:all 0.2s; font-family:inherit;
+}
+.nav-btn:hover { background:var(--terra); border-color:var(--terra); color:white; }
+.slide-counter { font-size:0.78rem; color:rgba(253,250,246,0.5); min-width:50px; text-align:center; letter-spacing:0.06em; }
+.lang-btn {
+  background:none; border:1px solid rgba(196,113,74,0.4);
+  color:var(--terra); padding:0.25rem 0.8rem; border-radius:2rem;
+  font-size:0.72rem; cursor:pointer; letter-spacing:0.08em; text-transform:uppercase;
+  font-family:inherit; transition:all 0.2s;
+}
+.lang-btn:hover { background:var(--terra); color:white; }
+
+/* DOTS */
+.dots {
+  position:fixed; right:1.5rem; top:50%; transform:translateY(-50%);
+  display:flex; flex-direction:column; gap:8px; z-index:100;
+}
+.dot {
+  width:6px; height:6px; border-radius:50%;
+  background:rgba(253,250,246,0.2); cursor:pointer;
+  transition:all 0.25s;
+}
+.dot.active { background:var(--terra); transform:scale(1.4); }
+
+/* KEYBOARD HINT */
+.hint {
+  position:fixed; top:1.2rem; right:1.5rem; z-index:100;
+  font-size:0.68rem; color:rgba(253,250,246,0.3); letter-spacing:0.06em;
+}
+
+/* ===================== SLIDE STYLES ===================== */
+
+/* S1 — COVER */
+.s1 { background:var(--mocha); }
+.s1-bg {
+  position:absolute; inset:0;
+  background: radial-gradient(ellipse at 70% 50%, rgba(196,113,74,0.18) 0%, transparent 65%),
+              radial-gradient(ellipse at 20% 80%, rgba(196,113,74,0.08) 0%, transparent 50%);
+}
+.s1-grid {
+  position:absolute; inset:0; opacity:0.04;
+  background-image: linear-gradient(var(--terra) 1px, transparent 1px),
+                    linear-gradient(90deg, var(--terra) 1px, transparent 1px);
+  background-size:60px 60px;
+}
+.s1-content {
+  position:relative; z-index:2;
+  display:flex; flex-direction:column;
+  justify-content:center; align-items:flex-start;
+  height:100%; padding:5rem 7rem;
+}
+.s1-badge {
+  font-size:0.72rem; letter-spacing:0.18em; text-transform:uppercase;
+  color:var(--terra); border:1px solid rgba(196,113,74,0.4);
+  padding:0.35rem 1rem; border-radius:2rem; margin-bottom:2.5rem;
+}
+.s1-logo {
+  font-family:'Cormorant Garamond',serif;
+  font-size:5.5rem; font-weight:300; color:var(--cream);
+  line-height:1; margin-bottom:0.5rem; letter-spacing:0.04em;
+}
+.s1-logo span { color:var(--terra); }
+.s1-tagline {
+  font-family:'Cormorant Garamond',serif;
+  font-size:1.6rem; font-weight:300; font-style:italic;
+  color:rgba(253,250,246,0.55); margin-bottom:3rem;
+}
+.s1-divider { width:4rem; height:1px; background:var(--terra); margin-bottom:2rem; }
+.s1-sub { font-size:0.88rem; color:rgba(253,250,246,0.35); letter-spacing:0.04em; }
+.s1-year {
+  position:absolute; bottom:3rem; right:7rem;
+  font-family:'Cormorant Garamond',serif;
+  font-size:6rem; font-weight:300; color:rgba(196,113,74,0.06);
+  letter-spacing:0.1em;
+}
+
+/* S2 — PROBLEM */
+.s2 { background:var(--cream); }
+.s2-content { height:100%; display:grid; grid-template-columns:1fr 1fr; }
+.s2-left {
+  background:var(--mocha); padding:5rem;
+  display:flex; flex-direction:column; justify-content:center;
+}
+.slide-num {
+  font-family:'Cormorant Garamond',serif;
+  font-size:0.72rem; letter-spacing:0.2em; text-transform:uppercase;
+  margin-bottom:2rem;
+}
+.s2-left .slide-num { color:rgba(253,250,246,0.25); }
+.slide-label {
+  font-size:0.72rem; letter-spacing:0.16em; text-transform:uppercase;
+  margin-bottom:0.8rem;
+}
+.s2-left .slide-label { color:var(--terra); }
+.slide-title {
+  font-family:'Cormorant Garamond',serif;
+  font-size:3rem; font-weight:300; line-height:1.15; margin-bottom:2rem;
+}
+.s2-left .slide-title { color:var(--cream); }
+.s2-right { padding:5rem; display:flex; flex-direction:column; justify-content:center; gap:2rem; }
+.problem-card {
+  padding:1.5rem; border-radius:0.75rem;
+  border-left:3px solid var(--terra);
+  background:white; box-shadow:0 2px 20px rgba(44,24,16,0.06);
+}
+.problem-card h4 { font-size:0.95rem; font-weight:500; margin-bottom:0.4rem; color:var(--mocha); }
+.problem-card p { font-size:0.82rem; line-height:1.6; color:var(--mid); }
+
+/* S3 — SOLUTION */
+.s3 { background:var(--sand); }
+.s3-content { height:100%; padding:5rem 7rem; display:flex; flex-direction:column; justify-content:center; }
+.s3-header { margin-bottom:3.5rem; }
+.solution-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1.5rem; }
+.solution-card {
+  background:white; border-radius:1rem; padding:2rem;
+  border:1px solid rgba(44,24,16,0.08);
+  transition:transform 0.3s;
+}
+.solution-card:hover { transform:translateY(-4px); }
+.sol-icon {
+  width:44px; height:44px; border-radius:0.75rem;
+  background:rgba(196,113,74,0.12); display:flex; align-items:center;
+  justify-content:center; margin-bottom:1.2rem;
+  font-size:1.2rem;
+}
+.solution-card h4 { font-size:1rem; font-weight:500; margin-bottom:0.5rem; color:var(--mocha); }
+.solution-card p { font-size:0.82rem; line-height:1.6; color:var(--mid); }
+
+/* S4 — MARKET */
+.s4 { background:var(--mocha); }
+.s4-content { height:100%; padding:5rem 7rem; display:flex; flex-direction:column; justify-content:center; }
+.s4-content .slide-label { color:var(--terra); }
+.s4-content .slide-title { color:var(--cream); margin-bottom:3.5rem; }
+.market-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:2rem; margin-bottom:3rem; }
+.market-card {
+  padding:2rem; border-radius:1rem;
+  border:1px solid rgba(255,255,255,0.07);
+  background:rgba(255,255,255,0.04);
+}
+.market-num {
+  font-family:'Cormorant Garamond',serif;
+  font-size:3rem; font-weight:300; color:var(--terra); margin-bottom:0.3rem;
+}
+.market-label { font-size:0.8rem; color:rgba(253,250,246,0.5); margin-bottom:0.8rem; }
+.market-desc { font-size:0.78rem; line-height:1.6; color:rgba(253,250,246,0.35); }
+.market-note {
+  font-size:0.82rem; color:rgba(253,250,246,0.3); padding-top:1.5rem;
+  border-top:1px solid rgba(255,255,255,0.06);
+}
+.market-note strong { color:var(--terra); }
+
+/* S5 — PRODUCT */
+.s5 { background:var(--cream); }
+.s5-content { height:100%; display:grid; grid-template-columns:1fr 1.2fr; }
+.s5-left { padding:5rem; display:flex; flex-direction:column; justify-content:center; }
+.s5-left .slide-label { color:var(--terra); }
+.s5-right {
+  background:var(--mocha); position:relative; overflow:hidden;
+  display:flex; align-items:center; justify-content:center; padding:3rem;
+}
+.screen-mock {
+  background:var(--cream); border-radius:1rem; width:100%;
+  max-width:320px; overflow:hidden;
+  box-shadow:0 30px 80px rgba(0,0,0,0.5);
+}
+.screen-nav {
+  background:white; padding:0.8rem 1rem;
+  display:flex; justify-content:space-between; align-items:center;
+  border-bottom:1px solid rgba(44,24,16,0.06);
+}
+.screen-logo { font-family:'Cormorant Garamond',serif; font-size:1rem; color:var(--mocha); }
+.screen-logo span { color:var(--terra); }
+.screen-hero { padding:1.5rem 1rem; background:var(--mocha); }
+.screen-tag { font-size:0.55rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--terra); margin-bottom:0.5rem; }
+.screen-h { font-family:'Cormorant Garamond',serif; font-size:1.3rem; color:var(--cream); margin-bottom:0.8rem; }
+.screen-btn { background:var(--terra); color:white; font-size:0.6rem; padding:0.4rem 0.8rem; border-radius:1rem; display:inline-block; }
+.screen-cards { padding:1rem; display:flex; flex-direction:column; gap:0.6rem; }
+.screen-card {
+  background:white; border-radius:0.5rem; padding:0.8rem;
+  border:1px solid rgba(44,24,16,0.08); display:flex; gap:0.6rem;
+}
+.sc-avatar { width:30px; height:30px; border-radius:50%; flex-shrink:0; }
+.av1 { background:linear-gradient(135deg,#C8B4A0,#A8907A); }
+.av2 { background:linear-gradient(135deg,#A0B4C0,#6E8A96); }
+.av3 { background:linear-gradient(135deg,#B8C4A8,#90A880); }
+.sc-info { flex:1; }
+.sc-name { font-size:0.65rem; font-weight:500; color:var(--mocha); }
+.sc-sub { font-size:0.55rem; color:var(--soft); margin-top:1px; }
+.sc-stars { font-size:0.55rem; color:var(--gold); margin-top:3px; }
+.s5-features { margin-top:2.5rem; display:flex; flex-direction:column; gap:1rem; }
+.feature-row { display:flex; align-items:center; gap:0.8rem; }
+.feature-dot { width:8px; height:8px; border-radius:50%; background:var(--terra); flex-shrink:0; }
+.feature-row span { font-size:0.85rem; color:var(--mid); }
+
+/* S6 — BUSINESS MODEL */
+.s6 { background:var(--sand); }
+.s6-content { height:100%; padding:5rem 7rem; display:flex; flex-direction:column; justify-content:center; }
+.s6-content .slide-label { color:var(--terra); }
+.revenue-grid { display:grid; grid-template-columns:1fr 1fr; gap:2rem; margin-top:2.5rem; margin-bottom:2.5rem; }
+.rev-card {
+  background:var(--mocha); border-radius:1rem; padding:2.5rem;
+  position:relative; overflow:hidden;
+}
+.rev-card::before {
+  content:''; position:absolute; top:0; left:0; right:0; height:3px;
+  background:var(--terra);
+}
+.rev-num {
+  font-family:'Cormorant Garamond',serif;
+  font-size:2.8rem; font-weight:300; color:var(--terra); margin-bottom:0.3rem;
+}
+.rev-title { font-size:0.88rem; font-weight:500; color:var(--cream); margin-bottom:0.6rem; }
+.rev-desc { font-size:0.78rem; line-height:1.6; color:rgba(253,250,246,0.45); }
+.projection-row {
+  display:grid; grid-template-columns:repeat(3,1fr); gap:1.5rem;
+  padding:1.5rem; background:white; border-radius:1rem;
+  border:1px solid rgba(44,24,16,0.08);
+}
+.proj-item { text-align:center; }
+.proj-year { font-size:0.72rem; color:var(--soft); letter-spacing:0.06em; margin-bottom:0.3rem; }
+.proj-num {
+  font-family:'Cormorant Garamond',serif;
+  font-size:1.6rem; color:var(--mocha);
+}
+.proj-note { font-size:0.7rem; color:var(--terra); margin-top:0.2rem; }
+
+/* S7 — TRACTION */
+.s7 { background:var(--mocha); }
+.s7-content { height:100%; padding:5rem 7rem; display:flex; flex-direction:column; justify-content:center; }
+.s7-content .slide-label { color:var(--terra); }
+.s7-content .slide-title { color:var(--cream); margin-bottom:3rem; }
+.traction-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:1.5rem; margin-bottom:2.5rem; }
+.traction-item {
+  padding:2rem; border-radius:1rem;
+  border:1px solid rgba(255,255,255,0.07);
+  background:rgba(255,255,255,0.04);
+}
+.tr-num {
+  font-family:'Cormorant Garamond',serif;
+  font-size:2.5rem; font-weight:300; color:var(--terra); margin-bottom:0.3rem;
+}
+.tr-label { font-size:0.82rem; color:rgba(253,250,246,0.45); }
+.roadmap {
+  display:flex; gap:0; background:rgba(255,255,255,0.04);
+  border-radius:1rem; overflow:hidden; border:1px solid rgba(255,255,255,0.06);
+}
+.rm-step { flex:1; padding:1.2rem 1.5rem; border-right:1px solid rgba(255,255,255,0.06); }
+.rm-step:last-child { border-right:none; }
+.rm-step.active { background:rgba(196,113,74,0.12); }
+.rm-month { font-size:0.68rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--terra); margin-bottom:0.4rem; }
+.rm-desc { font-size:0.78rem; color:rgba(253,250,246,0.4); line-height:1.5; }
+.rm-step.active .rm-desc { color:rgba(253,250,246,0.7); }
+
+/* S8 — COMPETITION */
+.s8 { background:var(--cream); }
+.s8-content { height:100%; padding:5rem 7rem; display:flex; flex-direction:column; justify-content:center; }
+.s8-content .slide-label { color:var(--terra); }
+.comp-table { width:100%; border-collapse:collapse; margin-top:2.5rem; }
+.comp-table th {
+  font-size:0.72rem; letter-spacing:0.1em; text-transform:uppercase;
+  color:var(--soft); font-weight:400; padding:0.8rem 1.2rem; text-align:left;
+  border-bottom:1px solid rgba(44,24,16,0.1);
+}
+.comp-table td { padding:1rem 1.2rem; font-size:0.85rem; border-bottom:1px solid rgba(44,24,16,0.06); }
+.comp-table tr:last-child td { border-bottom:none; }
+.comp-table tr.deco-row { background:rgba(196,113,74,0.06); }
+.comp-table tr.deco-row td { font-weight:500; color:var(--mocha); }
+.check { color:var(--terra); }
+.cross { color:rgba(44,24,16,0.2); }
+.comp-deco-label {
+  display:inline-flex; align-items:center; gap:0.4rem;
+}
+.comp-badge {
+  font-size:0.6rem; letter-spacing:0.08em; text-transform:uppercase;
+  background:var(--terra); color:white; padding:0.15rem 0.5rem; border-radius:1rem;
+}
+
+/* S9 — GO TO MARKET */
+.s9 { background:var(--sand); }
+.s9-content { height:100%; padding:5rem 7rem; display:flex; flex-direction:column; justify-content:center; }
+.s9-content .slide-label { color:var(--terra); }
+.gtm-phases { display:grid; grid-template-columns:repeat(3,1fr); gap:1.5rem; margin-top:2.5rem; }
+.gtm-card {
+  border-radius:1rem; padding:2rem; background:white;
+  border:1px solid rgba(44,24,16,0.08); position:relative;
+}
+.phase-num {
+  font-family:'Cormorant Garamond',serif;
+  font-size:3rem; font-weight:300; color:rgba(44,24,16,0.06);
+  position:absolute; top:1rem; right:1.2rem;
+}
+.gtm-phase-label { font-size:0.68rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--terra); margin-bottom:0.5rem; }
+.gtm-card h4 { font-size:1rem; font-weight:500; color:var(--mocha); margin-bottom:0.8rem; }
+.gtm-list { list-style:none; }
+.gtm-list li { font-size:0.8rem; color:var(--mid); padding:0.35rem 0; border-bottom:1px solid rgba(44,24,16,0.05); display:flex; gap:0.5rem; }
+.gtm-list li:last-child { border-bottom:none; }
+.gtm-list li::before { content:'→'; color:var(--terra); flex-shrink:0; }
+
+/* S10 — TEAM */
+.s10 { background:var(--mocha); }
+.s10-content { height:100%; padding:5rem 7rem; display:flex; flex-direction:column; justify-content:center; }
+.s10-content .slide-label { color:var(--terra); }
+.s10-content .slide-title { color:var(--cream); margin-bottom:3rem; }
+.team-grid { display:grid; grid-template-columns:1fr 1fr; gap:2rem; margin-bottom:2.5rem; }
+.team-card {
+  border-radius:1rem; padding:2rem;
+  border:1px solid rgba(255,255,255,0.07);
+  background:rgba(255,255,255,0.04);
+}
+.team-avatar {
+  width:56px; height:56px; border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  font-family:'Cormorant Garamond',serif; font-size:1.4rem; font-weight:300;
+  color:white; margin-bottom:1rem;
+}
+.av-terra { background:var(--terra); }
+.av-gold { background:var(--gold); }
+.team-name { font-size:1rem; font-weight:500; color:var(--cream); margin-bottom:0.2rem; }
+.team-role { font-size:0.78rem; color:var(--terra); margin-bottom:0.8rem; letter-spacing:0.04em; }
+.team-bio { font-size:0.8rem; line-height:1.6; color:rgba(253,250,246,0.45); }
+.team-tags { display:flex; gap:0.4rem; margin-top:0.8rem; flex-wrap:wrap; }
+.team-tag { font-size:0.65rem; padding:0.2rem 0.55rem; border-radius:1rem; border:1px solid rgba(255,255,255,0.12); color:rgba(253,250,246,0.5); }
+.advisor-row {
+  padding:1.2rem 1.5rem; background:rgba(255,255,255,0.04);
+  border-radius:0.75rem; border:1px solid rgba(255,255,255,0.06);
+}
+.advisor-label { font-size:0.68rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--soft); margin-bottom:0.5rem; }
+.advisor-text { font-size:0.82rem; color:rgba(253,250,246,0.4); }
+
+/* S11 — THE ASK */
+.s11 { background:var(--cream); }
+.s11-content { height:100%; display:grid; grid-template-columns:1fr 1fr; }
+.s11-left { background:var(--mocha); padding:5rem; display:flex; flex-direction:column; justify-content:center; }
+.s11-left .slide-label { color:var(--terra); }
+.s11-left .slide-title { color:var(--cream); }
+.ask-amount {
+  font-family:'Cormorant Garamond',serif;
+  font-size:4rem; font-weight:300; color:var(--terra);
+  margin:1.5rem 0 0.3rem;
+}
+.ask-sub { font-size:0.85rem; color:rgba(253,250,246,0.35); margin-bottom:2rem; }
+.ask-terms { display:flex; flex-direction:column; gap:0.8rem; }
+.ask-term { font-size:0.82rem; color:rgba(253,250,246,0.5); display:flex; gap:0.6rem; }
+.ask-term::before { content:'◆'; color:var(--terra); font-size:0.5rem; margin-top:4px; flex-shrink:0; }
+.s11-right { padding:5rem; display:flex; flex-direction:column; justify-content:center; }
+.use-title { font-size:0.72rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--terra); margin-bottom:2rem; }
+.use-items { display:flex; flex-direction:column; gap:1.2rem; }
+.use-item { display:flex; align-items:center; gap:1rem; }
+.use-bar-wrap { flex:1; background:var(--sand); border-radius:1rem; height:8px; overflow:hidden; }
+.use-bar { height:100%; border-radius:1rem; background:var(--terra); }
+.use-label { font-size:0.82rem; color:var(--mid); min-width:140px; }
+.use-pct { font-size:0.82rem; color:var(--terra); font-weight:500; min-width:35px; text-align:right; }
+.milestone-grid { display:grid; grid-template-columns:1fr 1fr; gap:0.8rem; margin-top:2.5rem; }
+.milestone {
+  padding:1rem; border-radius:0.75rem; background:var(--sand);
+  border:1px solid rgba(44,24,16,0.07);
+}
+.ms-date { font-size:0.65rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--terra); margin-bottom:0.3rem; }
+.ms-text { font-size:0.8rem; color:var(--mocha); }
+
+/* S12 — VISION / CLOSE */
+.s12 { background:var(--mocha); }
+.s12-bg {
+  position:absolute; inset:0;
+  background:radial-gradient(ellipse at 30% 50%, rgba(196,113,74,0.15) 0%, transparent 60%),
+             radial-gradient(ellipse at 80% 80%, rgba(196,113,74,0.07) 0%, transparent 50%);
+}
+.s12-content {
+  position:relative; z-index:2;
+  height:100%; display:flex; flex-direction:column;
+  align-items:center; justify-content:center; text-align:center;
+  padding:5rem;
+}
+.s12-eyebrow { font-size:0.72rem; letter-spacing:0.2em; text-transform:uppercase; color:var(--terra); margin-bottom:2rem; }
+.s12-quote {
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(2rem,4vw,3.2rem); font-weight:300; font-style:italic;
+  color:var(--cream); max-width:700px; line-height:1.3; margin-bottom:3rem;
+}
+.s12-quote em { color:var(--terra); font-style:normal; }
+.s12-divider { width:3rem; height:1px; background:rgba(196,113,74,0.4); margin:0 auto 2.5rem; }
+.s12-contact { display:flex; gap:3rem; align-items:center; }
+.s12-contact-item { text-align:center; }
+.s12-contact-label { font-size:0.65rem; letter-spacing:0.1em; text-transform:uppercase; color:rgba(253,250,246,0.3); margin-bottom:0.4rem; }
+.s12-contact-val { font-size:0.88rem; color:rgba(253,250,246,0.65); }
+.s12-logo {
+  position:absolute; bottom:3rem; right:5rem;
+  font-family:'Cormorant Garamond',serif; font-size:1.4rem; color:rgba(253,250,246,0.15);
+}
+
+/* Arabic overrides */
+html[lang="ar"] { direction:rtl; }
+html[lang="ar"] .s1-content { align-items:flex-end; text-align:right; }
+html[lang="ar"] .s1-year { right:auto; left:7rem; }
+html[lang="ar"] .s12-logo { right:auto; left:5rem; }
+html[lang="ar"] .problem-card { border-left:none; border-right:3px solid var(--terra); }
+html[lang="ar"] .rev-card::before { left:auto; }
+html[lang="ar"] .rm-step { border-right:none; border-left:1px solid rgba(255,255,255,0.06); }
+html[lang="ar"] .gtm-list li::before { content:'←'; }
+html[lang="ar"] .ask-term::before { content:'◆'; }
+html[lang="ar"] .use-label { min-width:160px; text-align:right; }
+html[lang="ar"] .nav-btn { direction:ltr; }
+</style>
+</head>
+<body>
+<div class="deck" id="deck">
+
+<!-- SLIDE 1: COVER -->
+<div class="slide active" id="s1">
+  <div class="s1-bg"></div>
+  <div class="s1-grid"></div>
+  <div class="s1-content">
+    <div class="s1-badge" data-en="Seed Round · 2025" data-ar="جولة التمويل الأولي · 2025">Seed Round · 2025</div>
+    <div class="s1-logo">De<span>co</span></div>
+    <div class="s1-tagline" data-en="Where spaces find their story." data-ar="حيث تجد المساحات قصتها.">Where spaces find their story.</div>
+    <div class="s1-divider"></div>
+    <div class="s1-sub" data-en="Saudi Arabia's Interior Design Marketplace" data-ar="سوق التصميم الداخلي في المملكة العربية السعودية">Saudi Arabia's Interior Design Marketplace</div>
+  </div>
+  <div class="s1-year">2025</div>
+</div>
+
+<!-- SLIDE 2: PROBLEM -->
+<div class="slide" id="s2">
+  <div class="s2-content">
+    <div class="s2-left">
+      <div class="slide-num">02 / 12</div>
+      <div class="slide-label" data-en="The Problem" data-ar="المشكلة">The Problem</div>
+      <div class="slide-title" data-en="Finding a designer in Saudi Arabia is broken." data-ar="البحث عن مصمم في السعودية نظام معطّل.">Finding a designer in Saudi Arabia is broken.</div>
+      <div style="font-size:0.85rem;line-height:1.7;color:rgba(253,250,246,0.4)" data-en="Both sides of the market suffer from the same problem — no trusted, structured platform to connect them." data-ar="كلا طرفي السوق يعانيان من المشكلة ذاتها — لا توجد منصة موثوقة ومنظمة تربطهما.">Both sides of the market suffer from the same problem — no trusted, structured platform to connect them.</div>
+    </div>
+    <div class="s2-right">
+      <div class="problem-card">
+        <h4 data-en="For Customers" data-ar="من جانب العملاء">For Customers</h4>
+        <p data-en="They rely on word of mouth, Instagram DMs, and personal networks. No way to compare portfolios, verify credentials, see transparent pricing, or pay safely. The process is stressful and opaque." data-ar="يعتمدون على التوصيات الشخصية ورسائل إنستغرام والشبكات الشخصية. لا توجد طريقة لمقارنة المحافظ أو التحقق من المؤهلات أو رؤية الأسعار أو الدفع بأمان.">They rely on word of mouth, Instagram DMs, and personal networks. No way to compare portfolios, verify credentials, see transparent pricing, or pay safely.</p>
+      </div>
+      <div class="problem-card">
+        <h4 data-en="For Designers" data-ar="من جانب المصممين">For Designers</h4>
+        <p data-en="Talented designers are invisible outside their immediate network. They waste hours chasing unqualified leads and competing on social media with no professional infrastructure to support them." data-ar="المصممون الموهوبون غير مرئيين خارج شبكتهم الفورية. يضيعون ساعات في مطاردة عملاء غير مؤهلين دون بنية تحتية مهنية تدعمهم.">Talented designers are invisible outside their immediate network. They waste hours chasing unqualified leads with no professional infrastructure.</p>
+      </div>
+      <div class="problem-card">
+        <h4 data-en="No Platform Exists" data-ar="لا توجد منصة متخصصة">No Platform Exists</h4>
+        <p data-en="Houzz is global and completely unlocalized for Saudi Arabia — no Arabic interface, no SAR pricing, no Saudi verification, no cultural context. The gap is wide open." data-ar="هوز منصة عالمية غير مترجمة للسعودية إطلاقاً — لا واجهة عربية، لا تسعير بالريال، لا توثيق سعودي. الفرصة مفتوحة على مصراعيها.">Houzz is global and unlocalized — no Arabic, no SAR pricing, no Saudi verification. The gap is wide open.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 3: SOLUTION -->
+<div class="slide" id="s3">
+  <div class="s3-content">
+    <div class="s3-header">
+      <div class="slide-num" style="color:rgba(44,24,16,0.25)">03 / 12</div>
+      <div class="slide-label" data-en="The Solution" data-ar="الحل">The Solution</div>
+      <div class="slide-title" style="color:var(--mocha)" data-en="Deco — a two-sided marketplace built for Saudi Arabia." data-ar="Deco — سوق ثنائي الاتجاه مصمم للمملكة العربية السعودية.">Deco — a two-sided marketplace built for Saudi Arabia.</div>
+    </div>
+    <div class="solution-grid">
+      <div class="solution-card">
+        <div class="sol-icon">🔍</div>
+        <h4 data-en="Verified Designer Directory" data-ar="دليل مصممين معتمدين">Verified Designer Directory</h4>
+        <p data-en="Customers browse vetted designers filtered by city, style, budget, and specialty. Every profile is verified by Deco before going live." data-ar="يتصفح العملاء مصممين موثقين مصنفين حسب المدينة والأسلوب والميزانية. كل ملف شخصي يتم التحقق منه قبل النشر.">Customers browse vetted designers filtered by city, style, budget, and specialty. Every profile verified by Deco.</p>
+      </div>
+      <div class="solution-card">
+        <div class="sol-icon">📋</div>
+        <h4 data-en="Project Bidding System" data-ar="نظام تقديم العروض">Project Bidding System</h4>
+        <p data-en="Customers post their project — room type, budget, style — and verified designers submit structured proposals within 48 hours." data-ar="ينشر العملاء مشاريعهم — نوع الغرفة والميزانية والأسلوب — ويقدم المصممون عروضاً خلال 48 ساعة.">Customers post their project and receive structured proposals from verified designers within 48 hours.</p>
+      </div>
+      <div class="solution-card">
+        <div class="sol-icon">🔒</div>
+        <h4 data-en="Secure Escrow Payments" data-ar="مدفوعات آمنة بالضمان">Secure Escrow Payments</h4>
+        <p data-en="Payments are held in escrow and released to the designer only when project milestones are approved. Full protection for both sides." data-ar="المدفوعات محفوظة في نظام ضمان وتُطلق للمصمم فقط عند الموافقة على مراحل المشروع. حماية كاملة للطرفين.">Payments held in escrow, released on milestone approval. Full protection for both sides.</p>
+      </div>
+      <div class="solution-card">
+        <div class="sol-icon">⭐</div>
+        <h4 data-en="Verified Reviews" data-ar="تقييمات موثقة">Verified Reviews</h4>
+        <p data-en="Only clients who completed a project through Deco can leave a review — making ratings trustworthy and meaningful." data-ar="فقط العملاء الذين أتموا مشروعاً عبر Deco يمكنهم ترك تقييم — مما يجعل التقييمات موثوقة وذات معنى.">Only verified clients can leave reviews, making ratings genuinely trustworthy.</p>
+      </div>
+      <div class="solution-card">
+        <div class="sol-icon">🌐</div>
+        <h4 data-en="Fully Bilingual" data-ar="ثنائي اللغة بالكامل">Fully Bilingual</h4>
+        <p data-en="Complete Arabic and English support with RTL layout, SAR pricing, and a UI built around Saudi cultural context." data-ar="دعم كامل للعربية والإنجليزية مع تخطيط RTL وتسعير بالريال السعودي وواجهة مصممة للسياق الثقافي السعودي.">Full Arabic/English with RTL, SAR pricing, and Saudi cultural context built in.</p>
+      </div>
+      <div class="solution-card">
+        <div class="sol-icon">📱</div>
+        <h4 data-en="Mobile-First Design" data-ar="تصميم للموبايل أولاً">Mobile-First Design</h4>
+        <p data-en="Built for Snapchat and Instagram-native Saudi users. Discovery happens on mobile — so does everything else on Deco." data-ar="مصمم للمستخدمين السعوديين المعتمدين على سناب شات وإنستغرام. الاكتشاف يحدث على الموبايل — وكل شيء آخر على Deco أيضاً.">Built for Saudi's mobile-first, Snapchat-native audience.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 4: MARKET -->
+<div class="slide" id="s4">
+  <div class="s4-content">
+    <div class="slide-num" style="color:rgba(253,250,246,0.15)">04 / 12</div>
+    <div class="slide-label" data-en="Market Opportunity" data-ar="فرصة السوق">Market Opportunity</div>
+    <div class="slide-title" data-en="A $10 billion market with no dominant platform." data-ar="سوق بقيمة 10 مليار دولار بدون منصة مهيمنة.">A $10 billion market with no dominant platform.</div>
+    <div class="market-grid">
+      <div class="market-card">
+        <div class="market-num">$4.1B</div>
+        <div class="market-label" data-en="Saudi Interior Design Market — 2025" data-ar="سوق التصميم الداخلي في السعودية — 2025">Saudi Interior Design Market — 2025</div>
+        <div class="market-desc" data-en="Driven by Vision 2030, giga-projects (NEOM, Red Sea, Qiddiya), and a young population setting up first homes." data-ar="مدفوع برؤية 2030 والمشاريع العملاقة (نيوم، البحر الأحمر، قدية) وجيل شاب يؤسس منازله الأولى.">Driven by Vision 2030, giga-projects (NEOM, Red Sea, Qiddiya), and a young population setting up first homes.</div>
+      </div>
+      <div class="market-card">
+        <div class="market-num">$10.4B</div>
+        <div class="market-label" data-en="Projected Market Size — 2035" data-ar="حجم السوق المتوقع — 2035">Projected Market Size — 2035</div>
+        <div class="market-desc" data-en="6.3% CAGR over the next decade. 60% of GCC residents are under 30 — the fastest-growing client segment for interior design." data-ar="معدل نمو سنوي مركب 6.3% على مدى العقد القادم. 60% من سكان الخليج دون سن الثلاثين.">6.3% CAGR over the next decade. 60% of GCC residents under 30 — fastest-growing client segment.</div>
+      </div>
+      <div class="market-card">
+        <div class="market-num">480+</div>
+        <div class="market-label" data-en="Independent Designers in Target Cities" data-ar="مصمم مستقل في المدن المستهدفة">Independent Designers in Target Cities</div>
+        <div class="market-desc" data-en="Riyadh, Jeddah, and Dammam alone have hundreds of independent designers with no professional digital home." data-ar="الرياض وجدة والدمام وحدها تضم مئات المصممين المستقلين بلا موطن رقمي مهني.">Riyadh, Jeddah, and Dammam alone have hundreds of independent designers with no professional digital home.</div>
+      </div>
+    </div>
+    <div class="market-note">
+      <strong data-en="Serviceable Market (SAM):" data-ar="السوق القابل للخدمة:">Serviceable Market (SAM):</strong>
+      <span data-en=" Targeting independent and small-studio designers in 3 cities with residential/commercial projects SAR 10,000–500,000. Estimated SAM: $280M. Deco captures 10% commission on transactions." data-ar=" استهداف المصممين المستقلين واستوديوهات صغيرة في 3 مدن لمشاريع سكنية/تجارية. السوق القابل للخدمة: 280 مليون دولار. Deco تأخذ عمولة 10%."> Targeting independent designers in 3 cities, residential/commercial projects SAR 10K–500K. Estimated SAM: $280M. Deco earns 10% commission on transactions.</span>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 5: PRODUCT -->
+<div class="slide" id="s5">
+  <div class="s5-content">
+    <div class="s5-left">
+      <div class="slide-num" style="color:rgba(44,24,16,0.2)">05 / 12</div>
+      <div class="slide-label" data-en="The Product" data-ar="المنتج">The Product</div>
+      <div class="slide-title" style="color:var(--mocha);font-size:2.2rem" data-en="A working prototype — already built." data-ar="نموذج أولي يعمل — تم بناؤه بالفعل.">A working prototype — already built.</div>
+      <div style="font-size:0.85rem;line-height:1.7;color:var(--mid);margin-bottom:2rem" data-en="Deco is not just an idea. A full bilingual web prototype exists today with designer profiles, portfolio upload, project listings, and the complete user experience mapped out." data-ar="Deco ليست مجرد فكرة. نموذج ويب ثنائي اللغة موجود اليوم مع ملفات المصممين ورفع المحافظ وقوائم المشاريع وتجربة المستخدم الكاملة.">Deco is not just an idea. A full bilingual prototype exists today with designer profiles, portfolio upload, and project listings.</div>
+      <div class="s5-features">
+        <div class="feature-row"><div class="feature-dot"></div><span data-en="Designer profiles with verified badge + portfolio gallery" data-ar="ملفات مصممين مع شارة التحقق ومعرض المحفظة">Designer profiles with verified badge + portfolio gallery</span></div>
+        <div class="feature-row"><div class="feature-dot"></div><span data-en="Project listings with budget, city, and room type" data-ar="قوائم مشاريع مع الميزانية والمدينة ونوع الغرفة">Project listings with budget, city, and room type</span></div>
+        <div class="feature-row"><div class="feature-dot"></div><span data-en="Full Arabic/English bilingual toggle with RTL" data-ar="تبديل عربي/إنجليزي ثنائي اللغة مع RTL">Full Arabic/English bilingual toggle with RTL</span></div>
+        <div class="feature-row"><div class="feature-dot"></div><span data-en="Photo upload and lightbox portfolio viewer" data-ar="رفع الصور وعارض محافظ lightbox">Photo upload and lightbox portfolio viewer</span></div>
+        <div class="feature-row"><div class="feature-dot"></div><span data-en="Mobile-responsive, production-grade UI" data-ar="واجهة متجاوبة مع الجوال بجودة إنتاج">Mobile-responsive, production-grade UI</span></div>
+      </div>
+    </div>
+    <div class="s5-right">
+      <div class="screen-mock">
+        <div class="screen-nav">
+          <div class="screen-logo">De<span>co</span></div>
+          <div style="font-size:0.55rem;color:var(--terra);border:1px solid var(--terra);padding:2px 8px;border-radius:1rem">عربي</div>
+        </div>
+        <div class="screen-hero">
+          <div class="screen-tag" data-en="Saudi Arabia's Design Marketplace" data-ar="سوق التصميم السعودي">Saudi Arabia's Design Marketplace</div>
+          <div class="screen-h" data-en="Where spaces find their story." data-ar="حيث تجد المساحات قصتها.">Where spaces<br>find their story.</div>
+          <div class="screen-btn" data-en="Browse Designers →" data-ar="تصفح المصممين ←">Browse Designers →</div>
+        </div>
+        <div class="screen-cards">
+          <div class="screen-card">
+            <div class="sc-avatar av1"></div>
+            <div class="sc-info">
+              <div class="sc-name" data-en="Nora Al-Rashidi" data-ar="نورة الراشدي">Nora Al-Rashidi</div>
+              <div class="sc-sub" data-en="Minimalist · Riyadh" data-ar="بسيط · الرياض">Minimalist · Riyadh</div>
+              <div class="sc-stars">★★★★★ 4.9</div>
+            </div>
+          </div>
+          <div class="screen-card">
+            <div class="sc-avatar av2"></div>
+            <div class="sc-info">
+              <div class="sc-name" data-en="Khalid Al-Dosari" data-ar="خالد الدوسري">Khalid Al-Dosari</div>
+              <div class="sc-sub" data-en="Luxury · Jeddah" data-ar="فاخر · جدة">Luxury · Jeddah</div>
+              <div class="sc-stars">★★★★★ 4.8</div>
+            </div>
+          </div>
+          <div class="screen-card">
+            <div class="sc-avatar av3"></div>
+            <div class="sc-info">
+              <div class="sc-name" data-en="Sara Al-Otaibi" data-ar="سارة العتيبي">Sara Al-Otaibi</div>
+              <div class="sc-sub" data-en="Scandi · Dammam" data-ar="اسكندنافي · الدمام">Scandi · Dammam</div>
+              <div class="sc-stars">★★★★★ 4.9</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 6: BUSINESS MODEL -->
+<div class="slide" id="s6">
+  <div class="s6-content">
+    <div class="slide-num" style="color:rgba(44,24,16,0.2)">06 / 12</div>
+    <div class="slide-label" data-en="Business Model" data-ar="نموذج العمل">Business Model</div>
+    <div class="slide-title" style="color:var(--mocha)" data-en="Two revenue streams, one aligned incentive." data-ar="مصدران للإيرادات، حافز واحد متوافق.">Two revenue streams, one aligned incentive.</div>
+    <div class="revenue-grid">
+      <div class="rev-card">
+        <div class="rev-num">10%</div>
+        <div class="rev-title" data-en="Transaction Commission" data-ar="عمولة المعاملات">Transaction Commission</div>
+        <div class="rev-desc" data-en="Deco earns 10% of every completed project. On a SAR 30,000 project, Deco earns SAR 3,000. Paid automatically via escrow on milestone approval. Scales directly with platform GMV." data-ar="Deco تكسب 10% من كل مشروع مكتمل. على مشروع بقيمة 30,000 ريال، تكسب Deco 3,000 ريال. يُدفع تلقائياً عبر الضمان عند الموافقة على المراحل.">Deco earns 10% of every completed project. On a SAR 30K project, Deco earns SAR 3,000. Scales directly with GMV.</div>
+      </div>
+      <div class="rev-card">
+        <div class="rev-num">SAR 299</div>
+        <div class="rev-title" data-en="Designer Subscription / month" data-ar="اشتراك المصمم / شهرياً">Designer Subscription / month</div>
+        <div class="rev-desc" data-en="Premium listing with priority placement, analytics dashboard, and unlimited project bids. First 6 months free during launch phase to seed the supply side." data-ar="قائمة مميزة مع الأولوية في الظهور ولوحة تحكم تحليلية وعروض مشاريع غير محدودة. أول 6 أشهر مجانية خلال مرحلة الإطلاق.">Premium listing with priority placement, analytics, and unlimited bids. First 6 months free to seed supply.</div>
+      </div>
+    </div>
+    <div class="projection-row">
+      <div class="proj-item">
+        <div class="proj-year" data-en="Year 1 Target" data-ar="هدف السنة الأولى">Year 1 Target</div>
+        <div class="proj-num">SAR 480K</div>
+        <div class="proj-note" data-en="80 designers · 160 projects" data-ar="80 مصمم · 160 مشروع">80 designers · 160 projects</div>
+      </div>
+      <div class="proj-item">
+        <div class="proj-year" data-en="Year 2 Target" data-ar="هدف السنة الثانية">Year 2 Target</div>
+        <div class="proj-num">SAR 1.8M</div>
+        <div class="proj-note" data-en="250 designers · 600 projects" data-ar="250 مصمم · 600 مشروع">250 designers · 600 projects</div>
+      </div>
+      <div class="proj-item">
+        <div class="proj-year" data-en="Year 3 Target" data-ar="هدف السنة الثالثة">Year 3 Target</div>
+        <div class="proj-num">SAR 5.2M</div>
+        <div class="proj-note" data-en="GCC expansion · 3 countries" data-ar="توسع خليجي · 3 دول">GCC expansion · 3 countries</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 7: TRACTION -->
+<div class="slide" id="s7">
+  <div class="s7-content">
+    <div class="slide-num" style="color:rgba(253,250,246,0.15)">07 / 12</div>
+    <div class="slide-label" data-en="Traction & Roadmap" data-ar="التقدم وخارطة الطريق">Traction & Roadmap</div>
+    <div class="slide-title" data-en="Early signals. Clear next steps." data-ar="إشارات مبكرة. خطوات قادمة واضحة.">Early signals. Clear next steps.</div>
+    <div class="traction-grid">
+      <div class="traction-item">
+        <div class="tr-num">✓</div>
+        <div class="tr-label" data-en="Full bilingual prototype built and live" data-ar="نموذج أولي ثنائي اللغة مبني وجاهز">Full bilingual prototype built and live</div>
+      </div>
+      <div class="traction-item">
+        <div class="tr-num">20+</div>
+        <div class="tr-label" data-en="Designer conversations completed — strong interest confirmed" data-ar="محادثات مع مصممين مكتملة — اهتمام قوي مؤكد">Designer conversations — strong interest confirmed</div>
+      </div>
+      <div class="traction-item">
+        <div class="tr-num">0</div>
+        <div class="tr-label" data-en="Direct competitors in Saudi market — gap confirmed" data-ar="منافسون مباشرون في السوق السعودية — الفجوة مؤكدة">Direct competitors in Saudi market — gap confirmed</div>
+      </div>
+      <div class="traction-item">
+        <div class="tr-num">$4.1B</div>
+        <div class="tr-label" data-en="Validated market size with 10%+ annual growth" data-ar="حجم سوق محقق بنمو سنوي يزيد على 10%">Validated market size with 10%+ annual growth</div>
+      </div>
+    </div>
+    <div class="roadmap">
+      <div class="rm-step active">
+        <div class="rm-month" data-en="Now" data-ar="الآن">Now</div>
+        <div class="rm-desc" data-en="Prototype live. Designer recruitment. Investor conversations." data-ar="النموذج جاهز. استقطاب المصممين. محادثات مع المستثمرين.">Prototype live. Designer recruitment. Investor conversations.</div>
+      </div>
+      <div class="rm-step">
+        <div class="rm-month" data-en="Month 3" data-ar="الشهر 3">Month 3</div>
+        <div class="rm-desc" data-en="50 designers onboarded. Beta launch in Riyadh." data-ar="50 مصمم مسجل. إطلاق تجريبي في الرياض.">50 designers onboarded. Beta launch in Riyadh.</div>
+      </div>
+      <div class="rm-step">
+        <div class="rm-month" data-en="Month 6" data-ar="الشهر 6">Month 6</div>
+        <div class="rm-desc" data-en="Payments live. First transactions. Jeddah expansion." data-ar="المدفوعات فعالة. أولى المعاملات. التوسع لجدة.">Payments live. First transactions. Jeddah expansion.</div>
+      </div>
+      <div class="rm-step">
+        <div class="rm-month" data-en="Month 12" data-ar="الشهر 12">Month 12</div>
+        <div class="rm-desc" data-en="200+ designers. SAR 480K revenue. Series A prep." data-ar="+200 مصمم. 480 ألف ريال إيرادات. التحضير لجولة A.">200+ designers. SAR 480K revenue. Series A prep.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 8: COMPETITION -->
+<div class="slide" id="s8">
+  <div class="s8-content">
+    <div class="slide-num" style="color:rgba(44,24,16,0.2)">08 / 12</div>
+    <div class="slide-label" data-en="Competitive Landscape" data-ar="المشهد التنافسي">Competitive Landscape</div>
+    <div class="slide-title" style="color:var(--mocha)" data-en="We are not competing. We are creating the category." data-ar="نحن لا نتنافس. نحن نصنع الفئة.">We are not competing. We are creating the category.</div>
+    <table class="comp-table">
+      <thead>
+        <tr>
+          <th data-en="Platform" data-ar="المنصة">Platform</th>
+          <th data-en="Arabic UI" data-ar="واجهة عربية">Arabic UI</th>
+          <th data-en="SAR Pricing" data-ar="تسعير بالريال">SAR Pricing</th>
+          <th data-en="Saudi Designers" data-ar="مصممون سعوديون">Saudi Designers</th>
+          <th data-en="Escrow Payments" data-ar="مدفوعات بالضمان">Escrow Payments</th>
+          <th data-en="Bidding System" data-ar="نظام عروض">Bidding System</th>
+          <th data-en="SA-Focused" data-ar="تركيز سعودي">SA-Focused</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="deco-row">
+          <td><div class="comp-deco-label">Deco <span class="comp-badge" data-en="us" data-ar="نحن">us</span></div></td>
+          <td class="check">✓</td><td class="check">✓</td><td class="check">✓</td>
+          <td class="check">✓</td><td class="check">✓</td><td class="check">✓</td>
+        </tr>
+        <tr>
+          <td>Houzz</td>
+          <td class="cross">✗</td><td class="cross">✗</td><td class="cross">✗</td>
+          <td class="cross">✗</td><td class="cross">✗</td><td class="cross">✗</td>
+        </tr>
+        <tr>
+          <td data-en="Instagram" data-ar="إنستغرام">Instagram</td>
+          <td class="check">✓</td><td class="cross">✗</td><td class="check">✓</td>
+          <td class="cross">✗</td><td class="cross">✗</td><td class="cross">✗</td>
+        </tr>
+        <tr>
+          <td data-en="Word of Mouth" data-ar="التوصيات الشخصية">Word of Mouth</td>
+          <td class="check">✓</td><td class="cross">✗</td><td class="check">✓</td>
+          <td class="cross">✗</td><td class="cross">✗</td><td class="cross">✗</td>
+        </tr>
+        <tr>
+          <td data-en="Freelance platforms" data-ar="منصات العمل الحر">Freelance platforms</td>
+          <td class="cross">✗</td><td class="cross">✗</td><td class="cross">✗</td>
+          <td class="check">✓</td><td class="cross">✗</td><td class="cross">✗</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- SLIDE 9: GO TO MARKET -->
+<div class="slide" id="s9">
+  <div class="s9-content">
+    <div class="slide-num" style="color:rgba(44,24,16,0.2)">09 / 12</div>
+    <div class="slide-label" data-en="Go-to-Market" data-ar="استراتيجية الوصول للسوق">Go-to-Market</div>
+    <div class="slide-title" style="color:var(--mocha)" data-en="Supply first. Then demand. Then scale." data-ar="العرض أولاً. ثم الطلب. ثم التوسع.">Supply first. Then demand. Then scale.</div>
+    <div class="gtm-phases">
+      <div class="gtm-card">
+        <div class="phase-num">1</div>
+        <div class="gtm-phase-label" data-en="Months 1–3 · Supply" data-ar="الأشهر 1-3 · العرض">Months 1–3 · Supply</div>
+        <h4 data-en="Recruit Designers" data-ar="استقطاب المصممين">Recruit Designers</h4>
+        <ul class="gtm-list">
+          <li data-en="Personal outreach to 80 designers in Riyadh + Jeddah" data-ar="تواصل شخصي مع 80 مصمم في الرياض وجدة">Personal outreach to 80 designers in Riyadh + Jeddah</li>
+          <li data-en="Free accounts for first 6 months" data-ar="حسابات مجانية لأول 6 أشهر">Free accounts for first 6 months</li>
+          <li data-en="Help them build profiles + shoot portfolio photos" data-ar="مساعدتهم في بناء الملفات وتصوير المحافظ">Help them build profiles + portfolio photos</li>
+          <li data-en="Partner with design schools in Riyadh" data-ar="شراكة مع مدارس التصميم في الرياض">Partner with design schools in Riyadh</li>
+        </ul>
+      </div>
+      <div class="gtm-card">
+        <div class="phase-num">2</div>
+        <div class="gtm-phase-label" data-en="Months 3–6 · Demand" data-ar="الأشهر 3-6 · الطلب">Months 3–6 · Demand</div>
+        <h4 data-en="Acquire Customers" data-ar="استقطاب العملاء">Acquire Customers</h4>
+        <ul class="gtm-list">
+          <li data-en="Snapchat ads — before/after transformation videos" data-ar="إعلانات سناب شات — مقاطع قبل وبعد">Snapchat ads — before/after transformation videos</li>
+          <li data-en="Instagram micro-influencers (home decor niche)" data-ar="مؤثرون صغار على إنستغرام (مجال الديكور المنزلي)">Instagram micro-influencers (home decor niche)</li>
+          <li data-en="Real estate developer partnerships" data-ar="شراكات مع مطوري العقارات">Real estate developer partnerships</li>
+          <li data-en="TikTok designer content — organic reach" data-ar="محتوى المصممين على تيك توك — وصول طبيعي">TikTok designer content — organic reach</li>
+        </ul>
+      </div>
+      <div class="gtm-card">
+        <div class="phase-num">3</div>
+        <div class="gtm-phase-label" data-en="Month 12+ · Scale" data-ar="الشهر 12+ · التوسع">Month 12+ · Scale</div>
+        <h4 data-en="Expand the Market" data-ar="توسيع السوق">Expand the Market</h4>
+        <ul class="gtm-list">
+          <li data-en="Dammam + Al Khobar expansion" data-ar="التوسع إلى الدمام والخبر">Dammam + Al Khobar expansion</li>
+          <li data-en="Commercial projects — offices + cafés" data-ar="مشاريع تجارية — مكاتب ومقاهي">Commercial projects — offices + cafés</li>
+          <li data-en="GCC expansion — UAE, Kuwait, Qatar" data-ar="توسع خليجي — الإمارات والكويت وقطر">GCC expansion — UAE, Kuwait, Qatar</li>
+          <li data-en="Furniture & materials affiliate revenue" data-ar="إيرادات تابعة من الأثاث والمواد">Furniture & materials affiliate revenue</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 10: TEAM -->
+<div class="slide" id="s10">
+  <div class="s10-content">
+    <div class="slide-num" style="color:rgba(253,250,246,0.15)">10 / 12</div>
+    <div class="slide-label" data-en="The Team" data-ar="الفريق">The Team</div>
+    <div class="slide-title" data-en="Built by people who understand this market." data-ar="بناه أناس يفهمون هذا السوق.">Built by people who understand this market.</div>
+    <div class="team-grid">
+      <div class="team-card">
+        <div class="team-avatar av-terra">A</div>
+        <div class="team-name" data-en="Ahmed (Lou)" data-ar="أحمد (لو)">Ahmed (Lou)</div>
+        <div class="team-role" data-en="Co-Founder & CEO — Product & Tech" data-ar="المؤسس المشارك والرئيس التنفيذي — المنتج والتكنولوجيا">Co-Founder & CEO — Product & Tech</div>
+        <div class="team-bio" data-en="Computer science background with full-stack development skills. Built the Deco prototype end-to-end. Deep understanding of the Saudi market and digital consumer behavior." data-ar="خلفية في علوم الحاسب مع مهارات تطوير كاملة. بنى نموذج Deco من الألف إلى الياء. فهم عميق للسوق السعودية وسلوك المستهلك الرقمي.">CS background, full-stack skills. Built the Deco prototype end-to-end. Deep understanding of Saudi market and digital consumer behavior.</div>
+        <div class="team-tags">
+          <span class="team-tag" data-en="Product" data-ar="المنتج">Product</span>
+          <span class="team-tag" data-en="Full-Stack Dev" data-ar="تطوير كامل">Full-Stack Dev</span>
+          <span class="team-tag" data-en="Saudi Market" data-ar="السوق السعودية">Saudi Market</span>
+        </div>
+      </div>
+      <div class="team-card">
+        <div class="team-avatar av-gold">?</div>
+        <div class="team-name" data-en="Co-Founder (TBC)" data-ar="المؤسس المشارك (قيد التحديد)">Co-Founder (TBC)</div>
+        <div class="team-role" data-en="Co-Founder & COO — Operations & Growth" data-ar="المؤسس المشارك ومدير العمليات — العمليات والنمو">Co-Founder & COO — Operations & Growth</div>
+        <div class="team-bio" data-en="We are actively recruiting a co-founder with a background in business development, operations, or the interior design industry itself. This person will own designer acquisition, partnerships, and customer success." data-ar="نحن نبحث بنشاط عن مؤسس مشارك لديه خلفية في تطوير الأعمال أو العمليات أو صناعة التصميم الداخلي. هذا الشخص سيتولى استقطاب المصممين والشراكات ونجاح العملاء.">Actively recruiting a co-founder with background in business development, operations, or interior design. Will own designer acquisition, partnerships, and customer success.</div>
+        <div class="team-tags">
+          <span class="team-tag" data-en="Biz Dev" data-ar="تطوير الأعمال">Biz Dev</span>
+          <span class="team-tag" data-en="Operations" data-ar="العمليات">Operations</span>
+          <span class="team-tag" data-en="Growth" data-ar="النمو">Growth</span>
+        </div>
+      </div>
+    </div>
+    <div class="advisor-row">
+      <div class="advisor-label" data-en="Advisory" data-ar="الاستشارات">Advisory</div>
+      <div class="advisor-text" data-en="Seeking 1–2 advisors from the Saudi design industry or startup ecosystem to strengthen domain credibility and open doors for early designer partnerships." data-ar="نبحث عن 1-2 مستشارين من صناعة التصميم السعودية أو منظومة الشركات الناشئة لتعزيز المصداقية وفتح أبواب الشراكات.">Seeking 1–2 advisors from the Saudi design industry or startup ecosystem to strengthen credibility and open doors for designer partnerships.</div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 11: THE ASK -->
+<div class="slide" id="s11">
+  <div class="s11-content">
+    <div class="s11-left">
+      <div class="slide-num" style="color:rgba(253,250,246,0.15)">11 / 12</div>
+      <div class="slide-label" data-en="The Ask" data-ar="طلب التمويل">The Ask</div>
+      <div class="slide-title" data-en="Seed Round" data-ar="جولة التمويل الأولي">Seed Round</div>
+      <div class="ask-amount">SAR 375K</div>
+      <div class="ask-sub" data-en="~$100,000 USD · 12-month runway to first revenue" data-ar="~100,000 دولار أمريكي · 12 شهراً حتى أول إيراد">~$100,000 USD · 12-month runway to first revenue</div>
+      <div class="ask-terms">
+        <div class="ask-term" data-en="Equity offered: 10–15% (negotiable)" data-ar="الحصة المعروضة: 10-15% (قابل للتفاوض)">Equity offered: 10–15% (negotiable)</div>
+        <div class="ask-term" data-en="Target: Flat6Labs, Misk, or angel investors" data-ar="الهدف: Flat6Labs أو Misk أو مستثمرون ملائكة">Target: Flat6Labs, Misk, or angel investors</div>
+        <div class="ask-term" data-en="Also applying for Monsha'at non-dilutive grants" data-ar="نتقدم أيضاً لمنح منشآت غير المخففة للحصص">Also applying for Monsha'at non-dilutive grants</div>
+      </div>
+    </div>
+    <div class="s11-right">
+      <div class="use-title" data-en="Use of Funds" data-ar="استخدام التمويل">Use of Funds</div>
+      <div class="use-items">
+        <div class="use-item">
+          <div class="use-label" data-en="Product Development" data-ar="تطوير المنتج">Product Development</div>
+          <div class="use-bar-wrap"><div class="use-bar" style="width:45%"></div></div>
+          <div class="use-pct">45%</div>
+        </div>
+        <div class="use-item">
+          <div class="use-label" data-en="Marketing & Growth" data-ar="التسويق والنمو">Marketing & Growth</div>
+          <div class="use-bar-wrap"><div class="use-bar" style="width:25%"></div></div>
+          <div class="use-pct">25%</div>
+        </div>
+        <div class="use-item">
+          <div class="use-label" data-en="Operations & Legal" data-ar="العمليات والقانونية">Operations & Legal</div>
+          <div class="use-bar-wrap"><div class="use-bar" style="width:15%"></div></div>
+          <div class="use-pct">15%</div>
+        </div>
+        <div class="use-item">
+          <div class="use-label" data-en="Designer Onboarding" data-ar="استقطاب المصممين">Designer Onboarding</div>
+          <div class="use-bar-wrap"><div class="use-bar" style="width:15%"></div></div>
+          <div class="use-pct">15%</div>
+        </div>
+      </div>
+      <div class="milestone-grid">
+        <div class="milestone">
+          <div class="ms-date" data-en="Month 3" data-ar="الشهر 3">Month 3</div>
+          <div class="ms-text" data-en="50 designers live, beta launched" data-ar="50 مصمم مسجل، الإطلاق التجريبي">50 designers live, beta launched</div>
+        </div>
+        <div class="milestone">
+          <div class="ms-date" data-en="Month 6" data-ar="الشهر 6">Month 6</div>
+          <div class="ms-text" data-en="Payments active, first revenue" data-ar="المدفوعات فعالة، أول إيراد">Payments active, first revenue</div>
+        </div>
+        <div class="milestone">
+          <div class="ms-date" data-en="Month 9" data-ar="الشهر 9">Month 9</div>
+          <div class="ms-text" data-en="200 designers, SAR 200K GMV" data-ar="200 مصمم، 200 ألف ريال حجم معاملات">200 designers, SAR 200K GMV</div>
+        </div>
+        <div class="milestone">
+          <div class="ms-date" data-en="Month 12" data-ar="الشهر 12">Month 12</div>
+          <div class="ms-text" data-en="Series A ready, GCC expansion" data-ar="جاهز لجولة A، توسع خليجي">Series A ready, GCC expansion</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 12: VISION / CLOSE -->
+<div class="slide" id="s12">
+  <div class="s12-bg"></div>
+  <div class="s12-content">
+    <div class="s12-eyebrow" data-en="The Vision" data-ar="الرؤية">The Vision</div>
+    <div class="s12-quote">
+      <span data-en='"Saudi Arabia is building the future. <em>Deco</em> is how it will be designed."' data-ar='"المملكة العربية السعودية تبني المستقبل. <em>Deco</em> هي الطريقة التي سيُصمَّم بها."'>"Saudi Arabia is building the future. <em>Deco</em> is how it will be designed."</span>
+    </div>
+    <div class="s12-divider"></div>
+    <div class="s12-contact">
+      <div class="s12-contact-item">
+        <div class="s12-contact-label" data-en="Founder" data-ar="المؤسس">Founder</div>
+        <div class="s12-contact-val">Ahmed</div>
+      </div>
+      <div class="s12-contact-item">
+        <div class="s12-contact-label" data-en="Platform" data-ar="المنصة">Platform</div>
+        <div class="s12-contact-val">deco.sa</div>
+      </div>
+      <div class="s12-contact-item">
+        <div class="s12-contact-label" data-en="Stage" data-ar="المرحلة">Stage</div>
+        <div class="s12-contact-val" data-en="Pre-Seed · 2025" data-ar="ما قبل التأسيس · 2025">Pre-Seed · 2025</div>
+      </div>
+    </div>
+  </div>
+  <div class="s12-logo">De<span style="color:var(--terra)">co</span></div>
+</div>
+
+</div><!-- end deck -->
+
+<!-- NAVIGATION -->
+<div class="nav-bar">
+  <button class="nav-btn" onclick="prevSlide()">←</button>
+  <div class="slide-counter" id="counter">1 / 12</div>
+  <button class="nav-btn" onclick="nextSlide()">→</button>
+  <button class="lang-btn" id="langBtn" onclick="toggleLang()">عربي</button>
+</div>
+
+<div class="dots" id="dots"></div>
+<div class="hint" data-en="← → to navigate" data-ar="← → للتنقل">← → to navigate</div>
+
+<script>
+const TOTAL = 12;
+let current = 0;
+let lang = 'en';
+
+const slides = document.querySelectorAll('.slide');
+const counter = document.getElementById('counter');
+const dotsEl = document.getElementById('dots');
+
+// Build dots
+for (let i = 0; i < TOTAL; i++) {
+  const d = document.createElement('div');
+  d.className = 'dot' + (i === 0 ? ' active' : '');
+  d.onclick = () => goTo(i);
+  dotsEl.appendChild(d);
+}
+
+function goTo(n) {
+  slides[current].classList.remove('active');
+  slides[current].classList.add('prev');
+  setTimeout(() => slides[current].classList.remove('prev'), 500);
+  current = (n + TOTAL) % TOTAL;
+  slides[current].classList.add('active');
+  counter.textContent = (current + 1) + ' / ' + TOTAL;
+  document.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i === current));
+}
+
+function nextSlide() { goTo(current + 1); }
+function prevSlide() { goTo(current - 1); }
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight' || e.key === 'ArrowDown') nextSlide();
+  if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') prevSlide();
+});
+
+// Touch/swipe
+let tx = 0;
+document.addEventListener('touchstart', e => { tx = e.touches[0].clientX; });
+document.addEventListener('touchend', e => {
+  const dx = e.changedTouches[0].clientX - tx;
+  if (Math.abs(dx) > 50) dx < 0 ? nextSlide() : prevSlide();
+});
+
+// Language
+function toggleLang() { setLang(lang === 'en' ? 'ar' : 'en'); }
+
+function setLang(l) {
+  lang = l;
+  const isAr = l === 'ar';
+  document.documentElement.setAttribute('lang', l);
+  document.documentElement.setAttribute('dir', isAr ? 'rtl' : 'ltr');
+  document.querySelectorAll('[data-en]').forEach(el => {
+    el.innerHTML = isAr ? (el.getAttribute('data-ar') || el.innerHTML) : el.getAttribute('data-en');
+  });
+  document.getElementById('langBtn').textContent = isAr ? 'English' : 'عربي';
+}
+</script>
+</body>
+</html>
