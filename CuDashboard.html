@@ -1,0 +1,1399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Deco — Client Portal</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --mocha: #2C1810;
+  --mocha-mid: #5A3E32;
+  --terra: #C4714A;
+  --terra-light: #E8C4B0;
+  --terra-pale: rgba(196,113,74,0.08);
+  --gold: #B8924A;
+  --sand: #F5EFE6;
+  --sand-dark: #EBE0D0;
+  --cream: #FDFAF6;
+  --gray: #9A8F87;
+  --success: #4A9B6F;
+  --sidebar-w: 240px;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+html, body { height:100%; font-family:'DM Sans',sans-serif; background:var(--sand); color:var(--mocha); }
+
+/* ── LAYOUT ── */
+.shell { display:flex; height:100vh; overflow:hidden; }
+
+/* ── SIDEBAR ── */
+.sidebar {
+  width:var(--sidebar-w); height:100%;
+  background:var(--cream);
+  border-right:1px solid var(--sand-dark);
+  display:flex; flex-direction:column;
+  flex-shrink:0;
+}
+.sidebar-logo {
+  padding:1.8rem 1.6rem 1.4rem;
+  border-bottom:1px solid var(--sand-dark);
+}
+.logo-text {
+  font-family:'Cormorant Garamond',serif;
+  font-size:1.7rem; font-weight:300; letter-spacing:0.06em;
+  color:var(--mocha); text-decoration:none; display:block;
+}
+.logo-text span { color:var(--terra); }
+.logo-badge { font-size:0.62rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--gray); margin-top:0.2rem; }
+
+.sidebar-nav { flex:1; padding:1.2rem 0; overflow-y:auto; }
+.nav-section-label {
+  font-size:0.6rem; letter-spacing:0.18em; text-transform:uppercase;
+  color:var(--gray); padding:0.8rem 1.6rem 0.4rem; opacity:0.6;
+}
+.nav-item {
+  display:flex; align-items:center; gap:0.75rem;
+  padding:0.7rem 1.6rem; cursor:pointer; transition:all 0.2s;
+  font-size:0.84rem; color:var(--mocha-mid);
+  border:none; background:none; width:100%; text-align:left;
+  font-family:inherit; position:relative;
+}
+.nav-item:hover { color:var(--mocha); background:var(--sand); }
+.nav-item.active {
+  color:var(--terra); background:var(--terra-pale); font-weight:500;
+}
+.nav-item.active::before {
+  content:''; position:absolute; left:0; top:0; bottom:0;
+  width:3px; background:var(--terra); border-radius:0 2px 2px 0;
+}
+.nav-icon { font-size:1rem; width:18px; text-align:center; }
+.nav-badge {
+  margin-left:auto; background:var(--terra); color:white;
+  font-size:0.62rem; padding:0.15rem 0.5rem; border-radius:1rem;
+}
+
+.sidebar-user {
+  padding:1.2rem 1.6rem;
+  border-top:1px solid var(--sand-dark);
+  display:flex; align-items:center; gap:0.8rem;
+}
+.user-avatar {
+  width:36px; height:36px; border-radius:50%;
+  background:var(--mocha); display:flex; align-items:center;
+  justify-content:center; font-family:'Cormorant Garamond',serif;
+  font-size:1rem; color:var(--cream); flex-shrink:0;
+}
+.user-name { font-size:0.82rem; color:var(--mocha); font-weight:500; }
+.user-role { font-size:0.7rem; color:var(--gray); }
+
+/* ── MAIN ── */
+.main { flex:1; display:flex; flex-direction:column; overflow:hidden; }
+
+/* ── TOPBAR ── */
+.topbar {
+  background:var(--cream); border-bottom:1px solid var(--sand-dark);
+  padding:0 2.5rem; height:60px;
+  display:flex; align-items:center; justify-content:space-between;
+  flex-shrink:0;
+}
+.page-title { font-family:'Cormorant Garamond',serif; font-size:1.3rem; font-weight:300; }
+.topbar-right { display:flex; align-items:center; gap:1rem; }
+.topbar-btn {
+  background:none; border:1px solid var(--sand-dark);
+  color:var(--mocha-mid); padding:0.45rem 1rem; border-radius:2rem;
+  font-size:0.78rem; cursor:pointer; font-family:inherit; transition:all 0.2s;
+}
+.topbar-btn:hover { border-color:var(--terra); color:var(--terra); }
+.topbar-btn.primary {
+  background:var(--terra); color:white; border-color:var(--terra);
+}
+.topbar-btn.primary:hover { background:var(--mocha); border-color:var(--mocha); }
+.notif-btn { position:relative; background:none; border:none; cursor:pointer; color:var(--mocha-mid); font-size:1.1rem; padding:0.3rem; }
+.notif-dot { position:absolute; top:2px; right:2px; width:7px; height:7px; background:var(--terra); border-radius:50%; border:2px solid var(--cream); }
+
+/* ── CONTENT ── */
+.content { flex:1; overflow-y:auto; padding:2rem 2.5rem; }
+.panel { display:none; }
+.panel.active { display:block; }
+
+/* ── SHARED ── */
+.greeting { margin-bottom:2rem; }
+.greeting h2 { font-family:'Cormorant Garamond',serif; font-size:2rem; font-weight:300; }
+.greeting p { font-size:0.88rem; color:var(--gray); margin-top:0.3rem; }
+
+.card { background:var(--cream); border-radius:1rem; border:1px solid var(--sand-dark); overflow:hidden; }
+.card-header {
+  padding:1.2rem 1.5rem; border-bottom:1px solid var(--sand-dark);
+  display:flex; align-items:center; justify-content:space-between;
+}
+.card-title { font-family:'Cormorant Garamond',serif; font-size:1.1rem; font-weight:300; }
+.card-body { padding:1.5rem; }
+.card-action { font-size:0.75rem; color:var(--terra); cursor:pointer; border-bottom:1px solid transparent; transition:border-color 0.2s; }
+.card-action:hover { border-color:var(--terra); }
+
+.section-divider { font-size:0.7rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--gray); margin-bottom:1rem; padding-bottom:0.5rem; border-bottom:1px solid var(--sand-dark); }
+
+.stat-card { background:var(--cream); border-radius:1rem; padding:1.4rem 1.5rem; border:1px solid var(--sand-dark); }
+.stat-label { font-size:0.72rem; letter-spacing:0.08em; text-transform:uppercase; color:var(--gray); margin-bottom:0.5rem; }
+.stat-value { font-family:'Cormorant Garamond',serif; font-size:2.2rem; font-weight:300; color:var(--mocha); }
+.stat-delta { font-size:0.72rem; margin-top:0.3rem; color:var(--gray); }
+
+.proj-status { font-size:0.68rem; letter-spacing:0.06em; text-transform:uppercase; padding:0.2rem 0.6rem; border-radius:1rem; font-weight:500; }
+.status-active { background:rgba(74,155,111,0.12); color:var(--success); }
+.status-review { background:rgba(196,113,74,0.12); color:var(--terra); }
+.status-pending { background:rgba(154,143,135,0.12); color:var(--gray); }
+
+/* ══ OVERVIEW ══ */
+.stats-row { display:grid; grid-template-columns:repeat(4,1fr); gap:1.2rem; margin-bottom:2rem; }
+.two-col { display:grid; grid-template-columns:1.4fr 1fr; gap:1.5rem; margin-bottom:1.5rem; }
+
+.proj-item {
+  display:flex; align-items:flex-start; gap:1rem;
+  padding:1rem 0; border-bottom:1px solid var(--sand);
+}
+.proj-item:last-child { border-bottom:none; padding-bottom:0; }
+.proj-icon { width:38px; height:38px; border-radius:0.6rem; display:flex; align-items:center; justify-content:center; font-size:0.9rem; flex-shrink:0; }
+.pi-apt { background:rgba(196,113,74,0.1); }
+.pi-villa { background:rgba(184,146,74,0.1); }
+.pi-cafe { background:rgba(74,155,111,0.1); }
+.proj-info { flex:1; }
+.proj-name { font-size:0.88rem; font-weight:500; color:var(--mocha); }
+.proj-sub { font-size:0.75rem; color:var(--gray); margin-top:0.15rem; }
+.prog-bar { height:3px; background:var(--sand-dark); border-radius:2px; overflow:hidden; margin-top:0.5rem; }
+.prog-fill { height:100%; background:var(--terra); border-radius:2px; }
+
+/* Saved designers */
+.saved-designers { display:flex; flex-direction:column; gap:0.7rem; }
+.saved-card {
+  display:flex; align-items:center; gap:0.9rem;
+  padding:0.8rem; border-radius:0.75rem;
+  border:1px solid var(--sand-dark); background:var(--sand);
+  cursor:pointer; transition:all 0.2s;
+}
+.saved-card:hover { border-color:rgba(196,113,74,0.3); background:var(--terra-pale); }
+.saved-avatar { width:40px; height:40px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-family:'Cormorant Garamond',serif; font-size:1rem; color:white; flex-shrink:0; }
+.saved-name { font-size:0.85rem; font-weight:500; color:var(--mocha); }
+.saved-spec { font-size:0.72rem; color:var(--gray); }
+.saved-rating { font-size:0.75rem; color:var(--gold); margin-left:auto; }
+
+/* ══ POST PROJECT WIZARD ══ */
+.wizard-wrap { max-width:680px; margin:0 auto; }
+
+/* Progress steps */
+.wizard-steps {
+  display:flex; align-items:center; margin-bottom:3rem;
+  position:relative;
+}
+.wizard-steps::before {
+  content:''; position:absolute; top:16px; left:16px; right:16px;
+  height:1px; background:var(--sand-dark); z-index:0;
+}
+.ws {
+  display:flex; flex-direction:column; align-items:center; gap:0.5rem;
+  flex:1; position:relative; z-index:1;
+}
+.ws-circle {
+  width:32px; height:32px; border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  font-size:0.8rem; font-weight:500; transition:all 0.3s;
+  border:2px solid var(--sand-dark); background:var(--cream); color:var(--gray);
+}
+.ws.done .ws-circle { background:var(--success); border-color:var(--success); color:white; }
+.ws.active .ws-circle { background:var(--terra); border-color:var(--terra); color:white; }
+.ws-label { font-size:0.68rem; letter-spacing:0.06em; text-transform:uppercase; color:var(--gray); white-space:nowrap; }
+.ws.active .ws-label { color:var(--terra); }
+.ws.done .ws-label { color:var(--success); }
+
+/* Step cards */
+.step-card {
+  background:var(--cream); border-radius:1.5rem;
+  border:1px solid var(--sand-dark);
+  padding:2.5rem; display:none;
+}
+.step-card.active { display:block; }
+.step-heading {
+  font-family:'Cormorant Garamond',serif;
+  font-size:1.8rem; font-weight:300; margin-bottom:0.5rem;
+}
+.step-sub { font-size:0.88rem; color:var(--gray); margin-bottom:2rem; }
+
+/* Space type grid */
+.space-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:0.8rem; margin-bottom:2rem; }
+.space-option {
+  border:2px solid var(--sand-dark); border-radius:1rem;
+  padding:1.2rem 1rem; cursor:pointer; transition:all 0.25s;
+  background:var(--sand); text-align:center;
+}
+.space-option:hover { border-color:var(--terra-light); background:white; }
+.space-option.selected { border-color:var(--terra); background:var(--terra-pale); }
+.space-icon { font-size:1.8rem; margin-bottom:0.5rem; }
+.space-name { font-size:0.84rem; font-weight:500; color:var(--mocha); }
+.space-count { font-size:0.72rem; color:var(--gray); margin-top:0.2rem; }
+
+/* Style options */
+.style-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:0.8rem; margin-bottom:2rem; }
+.style-option {
+  border:2px solid var(--sand-dark); border-radius:1rem;
+  overflow:hidden; cursor:pointer; transition:all 0.25s;
+}
+.style-option:hover { border-color:var(--terra-light); }
+.style-option.selected { border-color:var(--terra); }
+.style-swatch { height:80px; }
+.s-minimalist { background:linear-gradient(135deg,#F5F0E8 0%,#E8E0D0 100%); }
+.s-luxury { background:linear-gradient(135deg,#2C1810 0%,#5A3E32 100%); }
+.s-contemporary { background:linear-gradient(135deg,#8BA0A8 0%,#4E6E7A 100%); }
+.s-arabic { background:linear-gradient(135deg,#C4A060 0%,#8A6830 100%); }
+.s-scandi { background:linear-gradient(135deg,#D4C8B8 0%,#A8A090 100%); }
+.s-industrial { background:linear-gradient(135deg,#787878 0%,#404040 100%); }
+.style-info { padding:0.8rem 1rem; }
+.style-name { font-size:0.84rem; font-weight:500; color:var(--mocha); }
+.style-desc { font-size:0.72rem; color:var(--gray); margin-top:0.2rem; }
+
+/* Budget slider */
+.budget-display {
+  text-align:center; margin-bottom:1.5rem;
+}
+.budget-amount { font-family:'Cormorant Garamond',serif; font-size:3rem; font-weight:300; color:var(--terra); }
+.budget-label { font-size:0.8rem; color:var(--gray); margin-top:0.3rem; }
+.range-slider {
+  width:100%; height:4px; appearance:none;
+  background:linear-gradient(to right, var(--terra) 0%, var(--terra) 50%, var(--sand-dark) 50%);
+  border-radius:2px; outline:none; cursor:pointer; margin-bottom:1rem;
+}
+.range-slider::-webkit-slider-thumb {
+  appearance:none; width:20px; height:20px; border-radius:50%;
+  background:var(--terra); border:3px solid var(--cream);
+  box-shadow:0 2px 8px rgba(196,113,74,0.4); cursor:pointer;
+}
+.range-labels { display:flex; justify-content:space-between; font-size:0.72rem; color:var(--gray); }
+.budget-extras { display:grid; grid-template-columns:1fr 1fr; gap:0.8rem; margin-top:1.5rem; }
+.budget-extra {
+  padding:0.8rem 1rem; border-radius:0.75rem;
+  border:1px solid var(--sand-dark); background:var(--sand);
+  cursor:pointer; transition:all 0.2s; display:flex; align-items:center; gap:0.6rem;
+  font-size:0.82rem; color:var(--mocha);
+}
+.budget-extra:hover, .budget-extra.selected { border-color:var(--terra); background:var(--terra-pale); color:var(--terra); }
+
+/* Form elements */
+.form-group { display:flex; flex-direction:column; gap:0.4rem; margin-bottom:1.2rem; }
+.form-label { font-size:0.72rem; letter-spacing:0.08em; text-transform:uppercase; color:var(--mocha-mid); }
+.form-input, .form-textarea, .form-select {
+  background:var(--sand); border:1px solid var(--sand-dark);
+  border-radius:0.6rem; padding:0.75rem 1rem;
+  font-family:inherit; font-size:0.88rem; color:var(--mocha);
+  outline:none; transition:border-color 0.2s;
+}
+.form-input:focus, .form-textarea:focus, .form-select:focus { border-color:var(--terra); }
+.form-textarea { resize:vertical; min-height:100px; }
+.form-row { display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
+
+/* Photo upload */
+.upload-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:0.8rem; margin-bottom:1.5rem; }
+.upload-slot {
+  aspect-ratio:4/3; border:2px dashed var(--sand-dark); border-radius:0.75rem;
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  cursor:pointer; transition:all 0.25s; background:var(--sand);
+  position:relative; overflow:hidden;
+}
+.upload-slot:hover { border-color:var(--terra); background:var(--terra-pale); }
+.upload-slot input { position:absolute; inset:0; opacity:0; cursor:pointer; }
+.upload-slot .slot-icon { font-size:1.4rem; color:var(--terra); margin-bottom:0.3rem; }
+.upload-slot .slot-text { font-size:0.72rem; color:var(--gray); text-align:center; }
+
+/* Step nav */
+.step-nav { display:flex; justify-content:space-between; align-items:center; margin-top:2rem; }
+.btn-back {
+  background:none; border:1px solid var(--sand-dark); color:var(--mocha-mid);
+  padding:0.7rem 1.5rem; border-radius:2rem; font-size:0.84rem;
+  cursor:pointer; font-family:inherit; transition:all 0.2s;
+}
+.btn-back:hover { border-color:var(--mocha); color:var(--mocha); }
+.btn-next {
+  background:var(--mocha); color:var(--cream);
+  border:none; padding:0.7rem 2rem; border-radius:2rem; font-size:0.84rem;
+  cursor:pointer; font-family:inherit; transition:all 0.2s;
+}
+.btn-next:hover { background:var(--terra); }
+.btn-next.terra { background:var(--terra); }
+.btn-next.terra:hover { background:var(--mocha); }
+.step-hint { font-size:0.75rem; color:var(--gray); }
+
+/* ══ PROPOSALS VIEW ══ */
+.proposals-header {
+  background:var(--cream); border-radius:1rem; border:1px solid var(--sand-dark);
+  padding:1.5rem 2rem; margin-bottom:1.5rem;
+  display:flex; align-items:center; justify-content:space-between;
+}
+.ph-project { font-family:'Cormorant Garamond',serif; font-size:1.5rem; font-weight:300; }
+.ph-meta { font-size:0.8rem; color:var(--gray); margin-top:0.2rem; }
+.ph-stats { display:flex; gap:2rem; }
+.ph-stat-num { font-family:'Cormorant Garamond',serif; font-size:1.6rem; color:var(--terra); }
+.ph-stat-label { font-size:0.68rem; color:var(--gray); text-transform:uppercase; letter-spacing:0.06em; }
+
+.filter-row { display:flex; align-items:center; gap:0.8rem; margin-bottom:1.5rem; flex-wrap:wrap; }
+.filter-chip {
+  padding:0.4rem 1rem; border-radius:2rem; border:1px solid var(--sand-dark);
+  background:var(--cream); font-size:0.78rem; color:var(--mocha-mid);
+  cursor:pointer; transition:all 0.2s; font-family:inherit;
+}
+.filter-chip:hover, .filter-chip.active { background:var(--mocha); color:var(--cream); border-color:var(--mocha); }
+
+/* Proposal cards */
+.proposals-grid { display:flex; flex-direction:column; gap:1.2rem; }
+.proposal-card {
+  background:var(--cream); border-radius:1rem;
+  border:1px solid var(--sand-dark);
+  overflow:hidden; transition:all 0.3s; cursor:pointer;
+}
+.proposal-card:hover { border-color:rgba(196,113,74,0.4); box-shadow:0 8px 30px rgba(44,24,16,0.08); }
+.proposal-card.featured { border-color:var(--terra); }
+.featured-badge {
+  background:var(--terra); color:white;
+  font-size:0.62rem; letter-spacing:0.1em; text-transform:uppercase;
+  padding:0.3rem 1rem; text-align:center;
+}
+.pc-body { padding:1.5rem; display:grid; grid-template-columns:auto 1fr auto; gap:1.2rem; align-items:start; }
+.pc-avatar {
+  width:52px; height:52px; border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  font-family:'Cormorant Garamond',serif; font-size:1.2rem; color:white; flex-shrink:0;
+}
+.pc-info { min-width:0; }
+.pc-name { font-size:1rem; font-weight:500; color:var(--mocha); margin-bottom:0.15rem; }
+.pc-spec { font-size:0.78rem; color:var(--gray); margin-bottom:0.5rem; }
+.pc-rating { display:flex; align-items:center; gap:0.4rem; font-size:0.78rem; margin-bottom:0.8rem; }
+.stars { color:var(--gold); }
+.pc-message { font-size:0.84rem; line-height:1.65; color:var(--mocha-mid); }
+.pc-right { text-align:right; flex-shrink:0; }
+.pc-quote { font-family:'Cormorant Garamond',serif; font-size:1.6rem; font-weight:300; color:var(--mocha); }
+.pc-timeline { font-size:0.75rem; color:var(--gray); margin-top:0.2rem; margin-bottom:1rem; }
+.pc-tags { display:flex; gap:0.4rem; flex-wrap:wrap; margin-top:0.8rem; }
+.pc-tag { font-size:0.68rem; padding:0.18rem 0.55rem; border-radius:1rem; border:1px solid rgba(44,24,16,0.12); color:var(--mocha-mid); }
+
+.pc-footer {
+  padding:1rem 1.5rem; border-top:1px solid var(--sand);
+  display:flex; align-items:center; gap:0.8rem;
+}
+.btn-hire {
+  background:var(--mocha); color:white;
+  border:none; padding:0.55rem 1.4rem; border-radius:2rem;
+  font-size:0.8rem; cursor:pointer; font-family:inherit; transition:all 0.2s;
+}
+.btn-hire:hover { background:var(--terra); }
+.btn-view-port {
+  background:none; color:var(--mocha);
+  border:1px solid var(--sand-dark); padding:0.55rem 1.2rem; border-radius:2rem;
+  font-size:0.8rem; cursor:pointer; font-family:inherit; transition:all 0.2s;
+}
+.btn-view-port:hover { border-color:var(--terra); color:var(--terra); }
+.btn-msg {
+  background:none; color:var(--gray);
+  border:1px solid var(--sand-dark); padding:0.55rem 1rem; border-radius:2rem;
+  font-size:0.8rem; cursor:pointer; font-family:inherit; transition:all 0.2s;
+  margin-left:auto;
+}
+.btn-msg:hover { color:var(--mocha); border-color:var(--mocha); }
+
+/* ══ TRACK PROJECTS ══ */
+.project-detail {
+  background:var(--cream); border-radius:1rem;
+  border:1px solid var(--sand-dark); margin-bottom:1.5rem;
+}
+.pd-header {
+  padding:1.5rem 2rem; border-bottom:1px solid var(--sand-dark);
+  display:grid; grid-template-columns:1fr auto; gap:1rem; align-items:center;
+}
+.pd-title { font-family:'Cormorant Garamond',serif; font-size:1.5rem; font-weight:300; }
+.pd-meta { font-size:0.8rem; color:var(--gray); margin-top:0.2rem; }
+.pd-actions { display:flex; gap:0.7rem; }
+
+.pd-body { padding:2rem; display:grid; grid-template-columns:1fr 1fr; gap:2rem; }
+
+/* Timeline */
+.timeline { display:flex; flex-direction:column; }
+.tl-item { display:flex; gap:1rem; position:relative; padding-bottom:1.5rem; }
+.tl-item:last-child { padding-bottom:0; }
+.tl-left { display:flex; flex-direction:column; align-items:center; }
+.tl-dot {
+  width:28px; height:28px; border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  font-size:0.7rem; flex-shrink:0; z-index:1;
+}
+.tl-dot.done { background:var(--success); color:white; }
+.tl-dot.active { background:var(--terra); color:white; }
+.tl-dot.todo { background:var(--sand-dark); color:var(--gray); border:2px dashed var(--gray); }
+.tl-line { width:1px; flex:1; background:var(--sand-dark); margin:4px 0; }
+.tl-item:last-child .tl-line { display:none; }
+.tl-content { flex:1; padding-top:4px; }
+.tl-name { font-size:0.9rem; font-weight:500; color:var(--mocha); margin-bottom:0.2rem; }
+.tl-desc { font-size:0.78rem; color:var(--gray); line-height:1.5; }
+.tl-date { font-size:0.72rem; color:var(--terra); margin-top:0.4rem; }
+.tl-approve {
+  background:var(--terra); color:white;
+  border:none; padding:0.35rem 0.9rem; border-radius:1rem;
+  font-size:0.72rem; cursor:pointer; font-family:inherit;
+  transition:all 0.2s; margin-top:0.6rem; display:inline-block;
+}
+.tl-approve:hover { background:var(--mocha); }
+.tl-approved {
+  font-size:0.72rem; color:var(--success); margin-top:0.5rem;
+  display:flex; align-items:center; gap:0.3rem;
+}
+
+/* Designer info panel */
+.designer-info-panel { }
+.dip-card {
+  background:var(--mocha); border-radius:1rem; overflow:hidden;
+  margin-bottom:1rem;
+}
+.dip-cover { height:100px; background:linear-gradient(135deg,#C8B4A0,#A08060); }
+.dip-body { padding:1rem 1.2rem 1.2rem; color:var(--cream); }
+.dip-avatar {
+  width:52px; height:52px; border-radius:50%;
+  border:3px solid var(--mocha); margin-top:-28px;
+  background:var(--terra); display:flex; align-items:center;
+  justify-content:center; font-family:'Cormorant Garamond',serif;
+  font-size:1.1rem; color:white; margin-bottom:0.6rem;
+}
+.dip-name { font-family:'Cormorant Garamond',serif; font-size:1.1rem; font-weight:300; }
+.dip-spec { font-size:0.75rem; color:rgba(253,250,246,0.5); margin-bottom:0.8rem; }
+.dip-stats { display:grid; grid-template-columns:1fr 1fr; gap:0.6rem; }
+.dip-stat { text-align:center; }
+.dip-stat-num { font-family:'Cormorant Garamond',serif; font-size:1.2rem; color:var(--terra); }
+.dip-stat-label { font-size:0.62rem; color:rgba(253,250,246,0.35); }
+
+/* Payment card */
+.payment-card {
+  background:var(--sand); border-radius:1rem; border:1px solid var(--sand-dark);
+  padding:1.2rem;
+}
+.payment-title { font-size:0.72rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--gray); margin-bottom:1rem; }
+.payment-item { display:flex; justify-content:space-between; font-size:0.82rem; padding:0.5rem 0; border-bottom:1px solid var(--sand-dark); }
+.payment-item:last-child { border-bottom:none; font-weight:500; }
+.payment-item.paid { color:var(--success); }
+.payment-item.escrow { color:var(--terra); }
+.payment-item.remaining { color:var(--gray); }
+.release-btn {
+  width:100%; background:var(--success); color:white;
+  border:none; padding:0.7rem; border-radius:0.6rem;
+  font-size:0.82rem; cursor:pointer; font-family:inherit;
+  margin-top:1rem; transition:all 0.2s;
+}
+.release-btn:hover { background:#3A8B5F; }
+
+/* ══ HIRE CONFIRM MODAL ══ */
+.modal-overlay {
+  position:fixed; inset:0; z-index:200;
+  background:rgba(44,24,16,0.55); backdrop-filter:blur(6px);
+  display:flex; align-items:center; justify-content:center; padding:1.5rem;
+  opacity:0; pointer-events:none; transition:opacity 0.3s;
+}
+.modal-overlay.open { opacity:1; pointer-events:all; }
+.modal {
+  background:var(--cream); border-radius:1.5rem;
+  width:100%; max-width:520px;
+  transform:translateY(20px) scale(0.98);
+  transition:transform 0.3s cubic-bezier(.22,.68,0,1.2);
+}
+.modal-overlay.open .modal { transform:translateY(0) scale(1); }
+.modal-header {
+  padding:1.5rem 2rem; border-bottom:1px solid var(--sand-dark);
+  display:flex; align-items:center; justify-content:space-between;
+}
+.modal-title { font-family:'Cormorant Garamond',serif; font-size:1.4rem; font-weight:300; }
+.modal-close { background:none; border:none; cursor:pointer; color:var(--gray); font-size:1.1rem; }
+.modal-body { padding:2rem; }
+.hire-summary {
+  background:var(--sand); border-radius:1rem; padding:1.2rem; margin-bottom:1.5rem;
+}
+.hs-row { display:flex; justify-content:space-between; font-size:0.84rem; padding:0.4rem 0; }
+.hs-label { color:var(--gray); }
+.hs-val { font-weight:500; color:var(--mocha); }
+.hs-total { border-top:1px solid var(--sand-dark); margin-top:0.5rem; padding-top:0.8rem; }
+.hs-total .hs-label { font-weight:500; color:var(--mocha); }
+.hs-total .hs-val { font-family:'Cormorant Garamond',serif; font-size:1.3rem; color:var(--terra); }
+
+.payment-method { margin-bottom:1.5rem; }
+.pm-option {
+  display:flex; align-items:center; gap:0.8rem;
+  padding:0.9rem 1rem; border-radius:0.75rem;
+  border:1px solid var(--sand-dark); background:var(--sand);
+  cursor:pointer; margin-bottom:0.6rem; transition:all 0.2s;
+}
+.pm-option:hover, .pm-option.selected { border-color:var(--terra); background:var(--terra-pale); }
+.pm-icon { font-size:1.2rem; }
+.pm-name { font-size:0.85rem; font-weight:500; color:var(--mocha); }
+.pm-desc { font-size:0.72rem; color:var(--gray); }
+
+.escrow-note {
+  background:rgba(74,155,111,0.08); border:1px solid rgba(74,155,111,0.2);
+  border-radius:0.75rem; padding:0.9rem 1rem;
+  font-size:0.78rem; color:var(--mocha-mid); line-height:1.6; margin-bottom:1.5rem;
+}
+
+.modal-footer {
+  padding:1.5rem 2rem; border-top:1px solid var(--sand-dark);
+  display:flex; gap:0.8rem; justify-content:flex-end;
+}
+.btn-cancel { background:none; border:1px solid var(--sand-dark); color:var(--mocha-mid); padding:0.65rem 1.5rem; border-radius:2rem; font-size:0.84rem; cursor:pointer; font-family:inherit; }
+.btn-confirm { background:var(--success); color:white; border:none; padding:0.65rem 1.8rem; border-radius:2rem; font-size:0.84rem; cursor:pointer; font-family:inherit; transition:all 0.2s; }
+.btn-confirm:hover { background:#3A8B5F; }
+
+/* Toast */
+.toast {
+  position:fixed; bottom:2rem; right:2rem; z-index:300;
+  background:var(--mocha); color:var(--cream);
+  padding:0.8rem 1.4rem; border-radius:0.75rem;
+  font-size:0.84rem; display:flex; align-items:center; gap:0.6rem;
+  transform:translateY(10px); opacity:0;
+  transition:all 0.3s; pointer-events:none;
+  box-shadow:0 8px 30px rgba(44,24,16,0.2);
+}
+.toast.show { opacity:1; transform:translateY(0); }
+.toast-icon { color:var(--terra); }
+
+@media (max-width:900px) {
+  .sidebar { width:60px; }
+  .sidebar-logo .logo-badge, .nav-section-label, .user-name, .user-role { display:none; }
+  .nav-item { padding:0.8rem; justify-content:center; }
+  .stats-row { grid-template-columns:1fr 1fr; }
+  .two-col, .form-row, .pd-body { grid-template-columns:1fr; }
+  .content { padding:1.5rem; }
+  .space-grid, .style-grid { grid-template-columns:1fr 1fr; }
+}
+</style>
+</head>
+<body>
+
+<div class="shell">
+
+  <!-- ── SIDEBAR ── -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <a class="logo-text" href="#">De<span>co</span></a>
+      <div class="logo-badge">Client Portal</div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Menu</div>
+      <button class="nav-item active" onclick="switchPanel('overview',this)">
+        <span class="nav-icon">◈</span> Dashboard
+      </button>
+      <button class="nav-item" onclick="switchPanel('post',this)">
+        <span class="nav-icon">✦</span> Post a Project
+      </button>
+      <button class="nav-item" onclick="switchPanel('proposals',this)">
+        <span class="nav-icon">◻</span> My Proposals
+        <span class="nav-badge">7</span>
+      </button>
+      <button class="nav-item" onclick="switchPanel('track',this)">
+        <span class="nav-icon">◑</span> Track Projects
+      </button>
+      <div class="nav-section-label">Account</div>
+      <button class="nav-item" onclick="showToast('Messages coming soon')">
+        <span class="nav-icon">◫</span> Messages
+        <span class="nav-badge">2</span>
+      </button>
+      <button class="nav-item" onclick="showToast('Settings coming soon')">
+        <span class="nav-icon">◉</span> Settings
+      </button>
+    </nav>
+    <div class="sidebar-user">
+      <div class="user-avatar">O</div>
+      <div>
+        <div class="user-name">Omar Al-Harbi</div>
+        <div class="user-role">Client</div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ── MAIN ── -->
+  <div class="main">
+    <div class="topbar">
+      <div class="page-title" id="pageTitle">Dashboard</div>
+      <div class="topbar-right">
+        <button class="topbar-btn" onclick="switchPanel('proposals',document.querySelectorAll('.nav-item')[2])">View Proposals</button>
+        <button class="topbar-btn primary" onclick="switchPanel('post',document.querySelectorAll('.nav-item')[1])">+ Post a Project</button>
+        <button class="notif-btn">🔔<span class="notif-dot"></span></button>
+      </div>
+    </div>
+
+    <div class="content">
+
+      <!-- ══ OVERVIEW ══ -->
+      <div class="panel active" id="panel-overview">
+        <div class="greeting">
+          <h2>Welcome back, Omar ◎</h2>
+          <p>Your living room project has 7 new proposals — ready to review?</p>
+        </div>
+
+        <div class="stats-row">
+          <div class="stat-card">
+            <div class="stat-label">Active Projects</div>
+            <div class="stat-value" style="color:var(--terra)">1</div>
+            <div class="stat-delta">In progress with designer</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Pending Proposals</div>
+            <div class="stat-value">7</div>
+            <div class="stat-delta">From verified designers</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">In Escrow</div>
+            <div class="stat-value" style="color:var(--gold)">11,250</div>
+            <div class="stat-delta">SAR secured for milestone 2</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Completed Projects</div>
+            <div class="stat-value">0</div>
+            <div class="stat-delta">Your first is underway!</div>
+          </div>
+        </div>
+
+        <div class="two-col">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">My Projects</div>
+              <a class="card-action" onclick="switchPanel('track',document.querySelectorAll('.nav-item')[3])">Track →</a>
+            </div>
+            <div class="card-body">
+              <div class="proj-item">
+                <div class="proj-icon pi-apt">🏠</div>
+                <div class="proj-info">
+                  <div class="proj-name">Modern Living Room & Master Bedroom</div>
+                  <div class="proj-sub">Designer: Nora Al-Rashidi · SAR 45,000</div>
+                  <div class="prog-bar"><div class="prog-fill" style="width:65%"></div></div>
+                  <div class="proj-sub" style="margin-top:3px">Milestone 2 of 4 — 3D Design Phase</div>
+                </div>
+                <span class="proj-status status-active">Active</span>
+              </div>
+              <div style="margin-top:1.2rem;padding:1rem;background:var(--sand);border-radius:0.75rem;font-size:0.82rem;color:var(--mocha-mid);line-height:1.6">
+                🔔 <strong>New:</strong> Nora uploaded your 3D concept renders. <a href="#" onclick="switchPanel('track',document.querySelectorAll('.nav-item')[3]);return false;" style="color:var(--terra)">Review & approve →</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header"><div class="card-title">Saved Designers</div></div>
+            <div class="card-body">
+              <div class="saved-designers">
+                <div class="saved-card">
+                  <div class="saved-avatar" style="background:var(--terra)">N</div>
+                  <div>
+                    <div class="saved-name">Nora Al-Rashidi</div>
+                    <div class="saved-spec">Contemporary · Riyadh</div>
+                  </div>
+                  <div class="saved-rating">★ 4.9</div>
+                </div>
+                <div class="saved-card">
+                  <div class="saved-avatar" style="background:#6E8A96">K</div>
+                  <div>
+                    <div class="saved-name">Khalid Al-Dosari</div>
+                    <div class="saved-spec">Luxury · Jeddah</div>
+                  </div>
+                  <div class="saved-rating">★ 4.8</div>
+                </div>
+                <div class="saved-card">
+                  <div class="saved-avatar" style="background:#90A880">S</div>
+                  <div>
+                    <div class="saved-name">Sara Al-Otaibi</div>
+                    <div class="saved-spec">Scandinavian · Dammam</div>
+                  </div>
+                  <div class="saved-rating">★ 4.9</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ POST PROJECT WIZARD ══ -->
+      <div class="panel" id="panel-post">
+        <div class="greeting">
+          <h2>Post a Project</h2>
+          <p>Tell us about your space and we'll match you with the right designers.</p>
+        </div>
+
+        <div class="wizard-wrap">
+          <!-- Steps -->
+          <div class="wizard-steps" id="wizardSteps">
+            <div class="ws active" id="ws1"><div class="ws-circle">1</div><div class="ws-label">Space</div></div>
+            <div class="ws" id="ws2"><div class="ws-circle">2</div><div class="ws-label">Style</div></div>
+            <div class="ws" id="ws3"><div class="ws-circle">3</div><div class="ws-label">Budget</div></div>
+            <div class="ws" id="ws4"><div class="ws-circle">4</div><div class="ws-label">Details</div></div>
+            <div class="ws" id="ws5"><div class="ws-circle">5</div><div class="ws-label">Review</div></div>
+          </div>
+
+          <!-- STEP 1: Space Type -->
+          <div class="step-card active" id="step1">
+            <div class="step-heading">What space do you want designed?</div>
+            <div class="step-sub">Choose the room or space type — you can add more later.</div>
+            <div class="space-grid">
+              <div class="space-option selected" onclick="selectSpace(this)">
+                <div class="space-icon">🛋️</div>
+                <div class="space-name">Living Room</div>
+                <div class="space-count">142 designers</div>
+              </div>
+              <div class="space-option" onclick="selectSpace(this)">
+                <div class="space-icon">🛏️</div>
+                <div class="space-name">Bedroom</div>
+                <div class="space-count">118 designers</div>
+              </div>
+              <div class="space-option" onclick="selectSpace(this)">
+                <div class="space-icon">🍳</div>
+                <div class="space-name">Kitchen</div>
+                <div class="space-count">89 designers</div>
+              </div>
+              <div class="space-option" onclick="selectSpace(this)">
+                <div class="space-icon">🏠</div>
+                <div class="space-name">Full Apartment</div>
+                <div class="space-count">74 designers</div>
+              </div>
+              <div class="space-option" onclick="selectSpace(this)">
+                <div class="space-icon">🏡</div>
+                <div class="space-name">Full Villa</div>
+                <div class="space-count">61 designers</div>
+              </div>
+              <div class="space-option" onclick="selectSpace(this)">
+                <div class="space-icon">💼</div>
+                <div class="space-name">Office</div>
+                <div class="space-count">53 designers</div>
+              </div>
+              <div class="space-option" onclick="selectSpace(this)">
+                <div class="space-icon">🚿</div>
+                <div class="space-name">Bathroom</div>
+                <div class="space-count">57 designers</div>
+              </div>
+              <div class="space-option" onclick="selectSpace(this)">
+                <div class="space-icon">☕</div>
+                <div class="space-name">Café / Restaurant</div>
+                <div class="space-count">38 designers</div>
+              </div>
+              <div class="space-option" onclick="selectSpace(this)">
+                <div class="space-icon">✦</div>
+                <div class="space-name">Other</div>
+                <div class="space-count">Custom</div>
+              </div>
+            </div>
+            <div class="step-nav">
+              <div class="step-hint">Step 1 of 5</div>
+              <button class="btn-next" onclick="goStep(2)">Next: Choose Style →</button>
+            </div>
+          </div>
+
+          <!-- STEP 2: Style -->
+          <div class="step-card" id="step2">
+            <div class="step-heading">What's your design style?</div>
+            <div class="step-sub">This helps designers understand your taste and send more relevant proposals.</div>
+            <div class="style-grid">
+              <div class="style-option selected" onclick="selectStyle(this)">
+                <div class="style-swatch s-minimalist"></div>
+                <div class="style-info">
+                  <div class="style-name">Minimalist</div>
+                  <div class="style-desc">Clean lines, neutral tones, deliberate simplicity</div>
+                </div>
+              </div>
+              <div class="style-option" onclick="selectStyle(this)">
+                <div class="style-swatch s-luxury"></div>
+                <div class="style-info">
+                  <div class="style-name">Luxury / Classical</div>
+                  <div class="style-desc">Opulent finishes, rich materials, grand presence</div>
+                </div>
+              </div>
+              <div class="style-option" onclick="selectStyle(this)">
+                <div class="style-swatch s-contemporary"></div>
+                <div class="style-info">
+                  <div class="style-name">Contemporary</div>
+                  <div class="style-desc">Modern, refined, functionally beautiful</div>
+                </div>
+              </div>
+              <div class="style-option" onclick="selectStyle(this)">
+                <div class="style-swatch s-arabic"></div>
+                <div class="style-info">
+                  <div class="style-name">Saudi / Arabic</div>
+                  <div class="style-desc">Heritage-inspired with modern comfort</div>
+                </div>
+              </div>
+              <div class="style-option" onclick="selectStyle(this)">
+                <div class="style-swatch s-scandi"></div>
+                <div class="style-info">
+                  <div class="style-name">Scandinavian</div>
+                  <div class="style-desc">Warm, natural, cosy and functional</div>
+                </div>
+              </div>
+              <div class="style-option" onclick="selectStyle(this)">
+                <div class="style-swatch s-industrial"></div>
+                <div class="style-info">
+                  <div class="style-name">Industrial</div>
+                  <div class="style-desc">Raw textures, exposed elements, urban edge</div>
+                </div>
+              </div>
+            </div>
+            <div class="step-nav">
+              <button class="btn-back" onclick="goStep(1)">← Back</button>
+              <button class="btn-next" onclick="goStep(3)">Next: Set Budget →</button>
+            </div>
+          </div>
+
+          <!-- STEP 3: Budget -->
+          <div class="step-card" id="step3">
+            <div class="step-heading">What's your budget?</div>
+            <div class="step-sub">This is shared with designers so they can tailor their proposals.</div>
+            <div class="budget-display">
+              <div class="budget-amount" id="budgetDisplay">SAR 45,000</div>
+              <div class="budget-label">Your approximate budget</div>
+            </div>
+            <input type="range" class="range-slider" id="budgetSlider"
+              min="5000" max="500000" step="5000" value="45000"
+              oninput="updateBudget(this.value)">
+            <div class="range-labels">
+              <span>SAR 5,000</span>
+              <span>SAR 500,000+</span>
+            </div>
+            <div class="budget-extras">
+              <div class="budget-extra" onclick="toggleExtra(this)">
+                <span>📐</span> 3D Rendering included
+              </div>
+              <div class="budget-extra" onclick="toggleExtra(this)">
+                <span>🔨</span> Execution / Contracting
+              </div>
+              <div class="budget-extra" onclick="toggleExtra(this)">
+                <span>🛋️</span> Furniture sourcing
+              </div>
+              <div class="budget-extra selected" onclick="toggleExtra(this)">
+                <span>💡</span> Lighting design
+              </div>
+            </div>
+            <div class="step-nav">
+              <button class="btn-back" onclick="goStep(2)">← Back</button>
+              <button class="btn-next" onclick="goStep(4)">Next: Add Details →</button>
+            </div>
+          </div>
+
+          <!-- STEP 4: Details -->
+          <div class="step-card" id="step4">
+            <div class="step-heading">Tell us more</div>
+            <div class="step-sub">The more detail you share, the better proposals you'll receive.</div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">City</label>
+                <select class="form-select">
+                  <option>Riyadh</option><option>Jeddah</option><option>Dammam</option>
+                  <option>Al-Khobar</option><option>Mecca</option><option>Medina</option>
+                  <option>Abha</option><option>Tabuk</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Space Size (m²)</label>
+                <input class="form-input" placeholder="e.g. 180" type="number">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Project Title</label>
+              <input class="form-input" placeholder="e.g. Modern Living Room & Master Bedroom">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Describe your vision</label>
+              <textarea class="form-textarea" placeholder="Describe what you're looking for, your lifestyle, preferences, and anything the designer should know..."></textarea>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Upload Inspiration Photos (optional)</label>
+              <div class="upload-grid">
+                <label class="upload-slot">
+                  <input type="file" accept="image/*">
+                  <div class="slot-icon">＋</div>
+                  <div class="slot-text">Add photo</div>
+                </label>
+                <label class="upload-slot">
+                  <input type="file" accept="image/*">
+                  <div class="slot-icon">＋</div>
+                  <div class="slot-text">Add photo</div>
+                </label>
+                <label class="upload-slot">
+                  <input type="file" accept="image/*">
+                  <div class="slot-icon">＋</div>
+                  <div class="slot-text">Add photo</div>
+                </label>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Timeline</label>
+              <select class="form-select">
+                <option>Flexible — no rush</option>
+                <option>1–2 months</option>
+                <option>2–3 months</option>
+                <option>3–6 months</option>
+                <option>Urgent — ASAP</option>
+              </select>
+            </div>
+
+            <div class="step-nav">
+              <button class="btn-back" onclick="goStep(3)">← Back</button>
+              <button class="btn-next" onclick="goStep(5)">Review Project →</button>
+            </div>
+          </div>
+
+          <!-- STEP 5: Review & Submit -->
+          <div class="step-card" id="step5">
+            <div class="step-heading">Review your project</div>
+            <div class="step-sub">Once you submit, verified designers will start sending proposals within 48 hours.</div>
+
+            <div style="background:var(--sand);border-radius:1rem;padding:1.5rem;margin-bottom:1.5rem;display:flex;flex-direction:column;gap:0.9rem">
+              <div style="display:flex;justify-content:space-between;align-items:center;padding-bottom:0.8rem;border-bottom:1px solid var(--sand-dark)">
+                <span style="font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-weight:300">Modern Living Room & Master Bedroom</span>
+                <span class="proj-status status-pending">Draft</span>
+              </div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.6rem;font-size:0.84rem">
+                <div><span style="color:var(--gray)">Space: </span>Living Room</div>
+                <div><span style="color:var(--gray)">Style: </span>Minimalist</div>
+                <div><span style="color:var(--gray)">Budget: </span><strong style="color:var(--terra)">SAR 45,000</strong></div>
+                <div><span style="color:var(--gray)">City: </span>Riyadh</div>
+                <div><span style="color:var(--gray)">Size: </span>180 m²</div>
+                <div><span style="color:var(--gray)">Timeline: </span>2–3 months</div>
+              </div>
+              <div style="font-size:0.82rem;color:var(--mocha-mid);padding-top:0.5rem;border-top:1px solid var(--sand-dark)">
+                Includes: 3D Rendering, Lighting Design
+              </div>
+            </div>
+
+            <div style="background:rgba(74,155,111,0.08);border:1px solid rgba(74,155,111,0.2);border-radius:0.75rem;padding:1rem;font-size:0.8rem;color:var(--mocha-mid);margin-bottom:1.5rem;line-height:1.7">
+              ✓ Your project will be visible to <strong>480+ verified designers</strong><br>
+              ✓ You'll receive your first proposals within <strong>48 hours</strong><br>
+              ✓ Posting is <strong>free</strong> — you only pay when you hire
+            </div>
+
+            <div class="step-nav">
+              <button class="btn-back" onclick="goStep(4)">← Edit Details</button>
+              <button class="btn-next terra" onclick="publishProject()">Publish Project ✦</button>
+            </div>
+          </div>
+
+        </div>
+      </div><!-- /post -->
+
+      <!-- ══ PROPOSALS ══ -->
+      <div class="panel" id="panel-proposals">
+        <div class="greeting">
+          <h2>Proposals</h2>
+          <p>7 designers responded to your Living Room project.</p>
+        </div>
+
+        <div class="proposals-header">
+          <div>
+            <div class="ph-project">Modern Living Room & Master Bedroom</div>
+            <div class="ph-meta">Posted 3 days ago · North Riyadh · SAR 45,000 · Minimalist</div>
+          </div>
+          <div class="ph-stats">
+            <div><div class="ph-stat-num">7</div><div class="ph-stat-label">Proposals</div></div>
+            <div><div class="ph-stat-num">45h</div><div class="ph-stat-label">Time Left</div></div>
+          </div>
+        </div>
+
+        <div class="filter-row">
+          <button class="filter-chip active" onclick="setFilter(this)">All (7)</button>
+          <button class="filter-chip" onclick="setFilter(this)">Best Match</button>
+          <button class="filter-chip" onclick="setFilter(this)">Lowest Price</button>
+          <button class="filter-chip" onclick="setFilter(this)">Highest Rated</button>
+          <button class="filter-chip" onclick="setFilter(this)">Fastest</button>
+        </div>
+
+        <div class="proposals-grid">
+
+          <!-- Top proposal -->
+          <div class="proposal-card featured">
+            <div class="featured-badge">✦ Top Match — Recommended by Deco</div>
+            <div class="pc-body">
+              <div class="pc-avatar" style="background:var(--terra)">N</div>
+              <div class="pc-info">
+                <div class="pc-name">Nora Al-Rashidi</div>
+                <div class="pc-spec">Contemporary & Minimalist · Riyadh · 7 yrs experience</div>
+                <div class="pc-rating">
+                  <span class="stars">★★★★★</span>
+                  <span>4.9</span>
+                  <span style="color:var(--gray)">(128 reviews)</span>
+                  <span class="proj-status status-active" style="font-size:0.65rem">Verified</span>
+                </div>
+                <div class="pc-message">
+                  "I'd love to transform your space into a serene, minimalist sanctuary. My approach starts with understanding how you actually live — then designing around that. For this project I'm envisioning a warm neutral palette with natural oak accents and layered lighting. I'll provide a full 3D render before any execution begins."
+                </div>
+                <div class="pc-tags">
+                  <span class="pc-tag">Minimalist</span>
+                  <span class="pc-tag">3D Rendering</span>
+                  <span class="pc-tag">Residential</span>
+                  <span class="pc-tag">Space Planning</span>
+                </div>
+              </div>
+              <div class="pc-right">
+                <div class="pc-quote">SAR 45,000</div>
+                <div class="pc-timeline">6–8 weeks</div>
+                <div style="font-size:0.72rem;color:var(--success)">✓ Within your budget</div>
+              </div>
+            </div>
+            <div class="pc-footer">
+              <button class="btn-hire" onclick="openHireModal('Nora Al-Rashidi','SAR 45,000')">Hire Nora →</button>
+              <button class="btn-view-port">View Portfolio</button>
+              <button class="btn-msg">Message</button>
+            </div>
+          </div>
+
+          <!-- Proposal 2 -->
+          <div class="proposal-card">
+            <div class="pc-body">
+              <div class="pc-avatar" style="background:#6E8A96">K</div>
+              <div class="pc-info">
+                <div class="pc-name">Khalid Al-Dosari</div>
+                <div class="pc-spec">Luxury & Classical · Jeddah · 12 yrs experience</div>
+                <div class="pc-rating">
+                  <span class="stars">★★★★★</span>
+                  <span>4.8</span>
+                  <span style="color:var(--gray)">(94 reviews)</span>
+                </div>
+                <div class="pc-message">
+                  "While my signature is luxury, I've successfully delivered minimalist projects that feel truly elevated. I'd bring the same precision and attention to material quality — but stripped to its essentials. I can have an initial concept ready within 5 days of signing."
+                </div>
+                <div class="pc-tags">
+                  <span class="pc-tag">Luxury</span>
+                  <span class="pc-tag">Classical</span>
+                  <span class="pc-tag">Full Service</span>
+                </div>
+              </div>
+              <div class="pc-right">
+                <div class="pc-quote">SAR 52,000</div>
+                <div class="pc-timeline">8–10 weeks</div>
+                <div style="font-size:0.72rem;color:var(--terra)">SAR 7,000 over budget</div>
+              </div>
+            </div>
+            <div class="pc-footer">
+              <button class="btn-hire" onclick="openHireModal('Khalid Al-Dosari','SAR 52,000')">Hire Khalid →</button>
+              <button class="btn-view-port">View Portfolio</button>
+              <button class="btn-msg">Message</button>
+            </div>
+          </div>
+
+          <!-- Proposal 3 -->
+          <div class="proposal-card">
+            <div class="pc-body">
+              <div class="pc-avatar" style="background:#90A880">S</div>
+              <div class="pc-info">
+                <div class="pc-name">Sara Al-Otaibi</div>
+                <div class="pc-spec">Scandinavian & Minimalist · Dammam · 4 yrs experience</div>
+                <div class="pc-rating">
+                  <span class="stars">★★★★★</span>
+                  <span>4.9</span>
+                  <span style="color:var(--gray)">(67 reviews)</span>
+                </div>
+                <div class="pc-message">
+                  "Your vision sounds perfect for my style — natural textures, soft light, and spaces that breathe. I work closely with clients on mood boards before finalising anything, so you're always part of the process. I can complete the full design within 5 weeks."
+                </div>
+                <div class="pc-tags">
+                  <span class="pc-tag">Scandinavian</span>
+                  <span class="pc-tag">Budget-Friendly</span>
+                  <span class="pc-tag">Residential</span>
+                </div>
+              </div>
+              <div class="pc-right">
+                <div class="pc-quote">SAR 38,000</div>
+                <div class="pc-timeline">4–5 weeks</div>
+                <div style="font-size:0.72rem;color:var(--success)">✓ Under budget</div>
+              </div>
+            </div>
+            <div class="pc-footer">
+              <button class="btn-hire" onclick="openHireModal('Sara Al-Otaibi','SAR 38,000')">Hire Sara →</button>
+              <button class="btn-view-port">View Portfolio</button>
+              <button class="btn-msg">Message</button>
+            </div>
+          </div>
+
+        </div>
+      </div><!-- /proposals -->
+
+      <!-- ══ TRACK ══ -->
+      <div class="panel" id="panel-track">
+        <div class="greeting">
+          <h2>Track Projects</h2>
+          <p>Review milestones and approve deliverables.</p>
+        </div>
+
+        <div class="project-detail">
+          <div class="pd-header">
+            <div>
+              <div class="pd-title">Modern Living Room & Master Bedroom</div>
+              <div class="pd-meta">Designer: Nora Al-Rashidi · SAR 45,000 · Started Apr 5, 2025</div>
+            </div>
+            <div class="pd-actions">
+              <button class="topbar-btn">Message Nora</button>
+              <button class="topbar-btn primary" onclick="showToast('Downloading project report...')">Download Report</button>
+            </div>
+          </div>
+
+          <div class="pd-body">
+
+            <!-- Timeline -->
+            <div>
+              <div class="section-divider">Project Milestones</div>
+              <div class="timeline">
+
+                <div class="tl-item">
+                  <div class="tl-left">
+                    <div class="tl-dot done">✓</div>
+                    <div class="tl-line"></div>
+                  </div>
+                  <div class="tl-content">
+                    <div class="tl-name">1 — Brief & Requirements</div>
+                    <div class="tl-desc">Initial consultation, space measurements, mood board discussion and style agreement.</div>
+                    <div class="tl-date">Completed Apr 8, 2025</div>
+                    <div class="tl-approved">✓ Approved by you on Apr 8</div>
+                  </div>
+                </div>
+
+                <div class="tl-item">
+                  <div class="tl-left">
+                    <div class="tl-dot done">✓</div>
+                    <div class="tl-line"></div>
+                  </div>
+                  <div class="tl-content">
+                    <div class="tl-name">2 — Concept & Mood Board</div>
+                    <div class="tl-desc">Complete design direction, material palette, furniture selections, and color scheme presented.</div>
+                    <div class="tl-date">Completed Apr 15, 2025</div>
+                    <div class="tl-approved">✓ Approved by you on Apr 16</div>
+                  </div>
+                </div>
+
+                <div class="tl-item">
+                  <div class="tl-left">
+                    <div class="tl-dot active">→</div>
+                    <div class="tl-line"></div>
+                  </div>
+                  <div class="tl-content">
+                    <div class="tl-name">3 — 3D Design Renders</div>
+                    <div class="tl-desc">Full 3D visualization of the living room and master bedroom from multiple angles. Nora has uploaded 6 renders for your review.</div>
+                    <div class="tl-date">⏳ Uploaded May 2, 2025 — awaiting your approval</div>
+                    <button class="tl-approve" onclick="approveMilestone(this)">Review & Approve →</button>
+                  </div>
+                </div>
+
+                <div class="tl-item">
+                  <div class="tl-left">
+                    <div class="tl-dot todo">4</div>
+                    <div class="tl-line"></div>
+                  </div>
+                  <div class="tl-content">
+                    <div class="tl-name">4 — Execution & Handover</div>
+                    <div class="tl-desc">Final installation oversight, furniture delivery coordination, and project handover with a full specification document.</div>
+                    <div class="tl-date" style="color:var(--gray)">Estimated: May 30, 2025</div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+            <!-- Designer + Payments -->
+            <div>
+              <div class="section-divider">Your Designer</div>
+              <div class="dip-card">
+                <div class="dip-cover"></div>
+                <div class="dip-body">
+                  <div class="dip-avatar">N</div>
+                  <div class="dip-name">Nora Al-Rashidi</div>
+                  <div class="dip-spec">Contemporary & Minimalist · Riyadh</div>
+                  <div class="dip-stats">
+                    <div class="dip-stat"><div class="dip-stat-num">4.9</div><div class="dip-stat-label">Rating</div></div>
+                    <div class="dip-stat"><div class="dip-stat-num">47</div><div class="dip-stat-label">Projects</div></div>
+                    <div class="dip-stat"><div class="dip-stat-num">98%</div><div class="dip-stat-label">Satisfaction</div></div>
+                    <div class="dip-stat"><div class="dip-stat-num">3 yrs</div><div class="dip-stat-label">On Deco</div></div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="section-divider" style="margin-top:1rem">Payment Breakdown</div>
+              <div class="payment-card">
+                <div class="payment-title">Project Total: SAR 45,000</div>
+                <div class="payment-item paid">
+                  <span>Milestone 1 — Brief</span>
+                  <span>SAR 11,250 ✓ Released</span>
+                </div>
+                <div class="payment-item paid">
+                  <span>Milestone 2 — Concept</span>
+                  <span>SAR 11,250 ✓ Released</span>
+                </div>
+                <div class="payment-item escrow">
+                  <span>Milestone 3 — 3D Renders</span>
+                  <span>SAR 11,250 ⏳ In Escrow</span>
+                </div>
+                <div class="payment-item remaining">
+                  <span>Milestone 4 — Execution</span>
+                  <span>SAR 11,250 Pending</span>
+                </div>
+                <div class="payment-item" style="margin-top:0.3rem">
+                  <span>Total Paid</span>
+                  <span style="color:var(--success)">SAR 22,500</span>
+                </div>
+                <button class="release-btn" onclick="releaseMilestone()">Release Milestone 3 Payment →</button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div><!-- /track -->
+
+    </div><!-- /content -->
+  </div><!-- /main -->
+</div><!-- /shell -->
+
+<!-- ── HIRE MODAL ── -->
+<div class="modal-overlay" id="hireModal" onclick="closeMOnBg(event)">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Confirm Hire</div>
+      <button class="modal-close" onclick="closeHireModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="hire-summary">
+        <div class="hs-row"><span class="hs-label">Designer</span><span class="hs-val" id="hireDesigner">Nora Al-Rashidi</span></div>
+        <div class="hs-row"><span class="hs-label">Project</span><span class="hs-val">Modern Living Room & Master Bedroom</span></div>
+        <div class="hs-row"><span class="hs-label">Quote</span><span class="hs-val" id="hireAmount">SAR 45,000</span></div>
+        <div class="hs-row"><span class="hs-label">Platform fee (10%)</span><span class="hs-val" id="hireFee">SAR 4,500</span></div>
+        <div class="hs-row hs-total"><span class="hs-label">Total</span><span class="hs-val" id="hireTotal">SAR 49,500</span></div>
+      </div>
+
+      <div class="payment-method">
+        <div class="section-divider">Payment Method</div>
+        <div class="pm-option selected" onclick="selectPM(this)">
+          <div class="pm-icon">💳</div>
+          <div><div class="pm-name">Credit / Debit Card</div><div class="pm-desc">Visa, Mastercard, Mada</div></div>
+        </div>
+        <div class="pm-option" onclick="selectPM(this)">
+          <div class="pm-icon">📱</div>
+          <div><div class="pm-name">Apple Pay / STC Pay</div><div class="pm-desc">Instant, no card needed</div></div>
+        </div>
+        <div class="pm-option" onclick="selectPM(this)">
+          <div class="pm-icon">🏦</div>
+          <div><div class="pm-name">Bank Transfer</div><div class="pm-desc">IBAN transfer · 1–2 business days</div></div>
+        </div>
+      </div>
+
+      <div class="escrow-note">
+        🔒 Your payment is held securely in escrow by Deco. Funds are only released to the designer when you approve each milestone — you're always in control.
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeHireModal()">Cancel</button>
+      <button class="btn-confirm" onclick="confirmHire()">Confirm & Pay →</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"><span class="toast-icon">✦</span><span id="toastMsg"></span></div>
+
+<script>
+// ── PANELS ──
+const pageTitles = { overview:'Dashboard', post:'Post a Project', proposals:'My Proposals', track:'Track Projects' };
+function switchPanel(name, btn) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('panel-' + name).classList.add('active');
+  document.getElementById('pageTitle').textContent = pageTitles[name] || name;
+  document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+}
+
+// ── WIZARD ──
+let currentStep = 1;
+function goStep(n) {
+  document.getElementById('step' + currentStep).classList.remove('active');
+  document.getElementById('ws' + currentStep).classList.remove('active');
+  document.getElementById('ws' + currentStep).classList.add('done');
+  if (n <= currentStep) {
+    document.getElementById('ws' + currentStep).classList.remove('done');
+  }
+  currentStep = n;
+  document.getElementById('step' + n).classList.add('active');
+  document.getElementById('ws' + n).classList.add('active');
+  document.getElementById('ws' + n).classList.remove('done');
+  document.querySelector('.wizard-wrap').scrollIntoView({ behavior:'smooth' });
+}
+
+function selectSpace(el) { document.querySelectorAll('.space-option').forEach(e => e.classList.remove('selected')); el.classList.add('selected'); }
+function selectStyle(el) { document.querySelectorAll('.style-option').forEach(e => e.classList.remove('selected')); el.classList.add('selected'); }
+function toggleExtra(el) { el.classList.toggle('selected'); }
+
+function updateBudget(val) {
+  const n = parseInt(val);
+  document.getElementById('budgetDisplay').textContent = 'SAR ' + n.toLocaleString();
+  const pct = ((n - 5000) / (500000 - 5000)) * 100;
+  document.getElementById('budgetSlider').style.background =
+    `linear-gradient(to right, var(--terra) 0%, var(--terra) ${pct}%, var(--sand-dark) ${pct}%)`;
+}
+
+function publishProject() {
+  document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.nav-item')[2].classList.add('active');
+  switchPanel('proposals', document.querySelectorAll('.nav-item')[2]);
+  showToast('✓ Project published! Designers are being notified.');
+  currentStep = 1;
+  document.querySelectorAll('.step-card').forEach(s => s.classList.remove('active'));
+  document.getElementById('step1').classList.add('active');
+  document.querySelectorAll('.ws').forEach(w => { w.classList.remove('active','done'); });
+  document.getElementById('ws1').classList.add('active');
+}
+
+// ── FILTERS ──
+function setFilter(el) { document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active')); el.classList.add('active'); }
+
+// ── HIRE MODAL ──
+function openHireModal(designer, amount) {
+  document.getElementById('hireDesigner').textContent = designer;
+  document.getElementById('hireAmount').textContent = amount;
+  const num = parseInt(amount.replace(/[^0-9]/g,''));
+  const fee = Math.round(num * 0.1);
+  document.getElementById('hireFee').textContent = 'SAR ' + fee.toLocaleString();
+  document.getElementById('hireTotal').textContent = 'SAR ' + (num + fee).toLocaleString();
+  document.getElementById('hireModal').classList.add('open');
+}
+function closeHireModal() { document.getElementById('hireModal').classList.remove('open'); }
+function closeMOnBg(e) { if (e.target === document.getElementById('hireModal')) closeHireModal(); }
+function selectPM(el) { document.querySelectorAll('.pm-option').forEach(p => p.classList.remove('selected')); el.classList.add('selected'); }
+function confirmHire() {
+  closeHireModal();
+  switchPanel('track', document.querySelectorAll('.nav-item')[3]);
+  showToast('🎉 Hired! Payment secured in escrow. Project started.');
+}
+
+// ── MILESTONE APPROVE ──
+function approveMilestone(btn) {
+  btn.textContent = '✓ Approved';
+  btn.style.background = 'var(--success)';
+  btn.style.cursor = 'default';
+  btn.disabled = true;
+  const content = btn.closest('.tl-content');
+  const approved = document.createElement('div');
+  approved.className = 'tl-approved';
+  approved.innerHTML = '✓ Approved by you just now';
+  content.appendChild(approved);
+  showToast('✓ Milestone approved! Payment released to Nora.');
+}
+
+function releaseMilestone() {
+  showToast('✓ SAR 11,250 released to Nora Al-Rashidi.');
+}
+
+// ── TOAST ──
+let toastTimer;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  document.getElementById('toastMsg').textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 3500);
+}
+
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeHireModal(); });
+</script>
+</body>
+</html>
