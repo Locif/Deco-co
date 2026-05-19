@@ -1,0 +1,1421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Deco — Designer Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --mocha: #2C1810;
+  --mocha-mid: #5A3E32;
+  --terra: #C4714A;
+  --terra-light: #E8C4B0;
+  --terra-pale: rgba(196,113,74,0.08);
+  --gold: #B8924A;
+  --sand: #F5EFE6;
+  --sand-dark: #EBE0D0;
+  --cream: #FDFAF6;
+  --gray: #9A8F87;
+  --sidebar-w: 240px;
+  --success: #4A9B6F;
+  --warning: #C4914A;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+html, body { height:100%; font-family:'DM Sans',sans-serif; background:var(--sand); color:var(--mocha); }
+
+/* ── LAYOUT ── */
+.shell { display:flex; height:100vh; overflow:hidden; }
+
+/* ── SIDEBAR ── */
+.sidebar {
+  width:var(--sidebar-w); height:100%;
+  background:var(--mocha);
+  display:flex; flex-direction:column;
+  flex-shrink:0;
+  position:relative; z-index:10;
+}
+.sidebar-logo {
+  padding:2rem 1.6rem 1.5rem;
+  border-bottom:1px solid rgba(255,255,255,0.07);
+}
+.logo-text {
+  font-family:'Cormorant Garamond',serif;
+  font-size:1.7rem; font-weight:300; letter-spacing:0.06em;
+  color:var(--cream); text-decoration:none; display:block;
+}
+.logo-text span { color:var(--terra); }
+.logo-badge {
+  font-size:0.62rem; letter-spacing:0.12em; text-transform:uppercase;
+  color:rgba(253,250,246,0.3); margin-top:0.2rem;
+}
+
+.sidebar-nav { flex:1; padding:1.2rem 0; overflow-y:auto; }
+.nav-section-label {
+  font-size:0.6rem; letter-spacing:0.18em; text-transform:uppercase;
+  color:rgba(253,250,246,0.22); padding:0.8rem 1.6rem 0.4rem;
+}
+.nav-item {
+  display:flex; align-items:center; gap:0.75rem;
+  padding:0.7rem 1.6rem; cursor:pointer;
+  transition:all 0.2s; position:relative;
+  font-size:0.84rem; color:rgba(253,250,246,0.5);
+  border:none; background:none; width:100%; text-align:left;
+  font-family:inherit;
+}
+.nav-item:hover { color:rgba(253,250,246,0.85); background:rgba(255,255,255,0.04); }
+.nav-item.active {
+  color:var(--cream);
+  background:rgba(196,113,74,0.15);
+}
+.nav-item.active::before {
+  content:''; position:absolute; left:0; top:0; bottom:0;
+  width:3px; background:var(--terra); border-radius:0 2px 2px 0;
+}
+.nav-icon { font-size:1rem; width:18px; text-align:center; }
+.nav-badge {
+  margin-left:auto; background:var(--terra);
+  color:white; font-size:0.62rem; font-weight:500;
+  padding:0.15rem 0.5rem; border-radius:1rem; min-width:1.2rem;
+  text-align:center;
+}
+
+.sidebar-user {
+  padding:1.2rem 1.6rem;
+  border-top:1px solid rgba(255,255,255,0.07);
+  display:flex; align-items:center; gap:0.8rem;
+}
+.user-avatar {
+  width:36px; height:36px; border-radius:50%;
+  background:var(--terra); display:flex; align-items:center;
+  justify-content:center; font-family:'Cormorant Garamond',serif;
+  font-size:1rem; color:white; flex-shrink:0;
+}
+.user-name { font-size:0.82rem; color:var(--cream); font-weight:500; }
+.user-role { font-size:0.7rem; color:rgba(253,250,246,0.35); }
+.user-status {
+  margin-left:auto; width:8px; height:8px;
+  background:var(--success); border-radius:50%; flex-shrink:0;
+}
+
+/* ── MAIN ── */
+.main { flex:1; display:flex; flex-direction:column; overflow:hidden; }
+
+/* ── TOPBAR ── */
+.topbar {
+  background:var(--cream); border-bottom:1px solid var(--sand-dark);
+  padding:0 2.5rem; height:60px;
+  display:flex; align-items:center; justify-content:space-between;
+  flex-shrink:0;
+}
+.page-title {
+  font-family:'Cormorant Garamond',serif;
+  font-size:1.3rem; font-weight:300; color:var(--mocha);
+}
+.topbar-right { display:flex; align-items:center; gap:1rem; }
+.topbar-btn {
+  background:none; border:1px solid var(--sand-dark);
+  color:var(--mocha-mid); padding:0.45rem 1rem; border-radius:2rem;
+  font-size:0.78rem; cursor:pointer; font-family:inherit;
+  transition:all 0.2s; display:flex; align-items:center; gap:0.4rem;
+}
+.topbar-btn:hover { border-color:var(--terra); color:var(--terra); }
+.topbar-btn.primary {
+  background:var(--terra); color:white; border-color:var(--terra);
+}
+.topbar-btn.primary:hover { background:var(--mocha); border-color:var(--mocha); }
+.notif-btn {
+  position:relative; background:none; border:none; cursor:pointer;
+  color:var(--mocha-mid); font-size:1.1rem; padding:0.3rem;
+}
+.notif-dot {
+  position:absolute; top:2px; right:2px;
+  width:7px; height:7px; background:var(--terra); border-radius:50%;
+  border:2px solid var(--cream);
+}
+
+/* ── CONTENT ── */
+.content { flex:1; overflow-y:auto; padding:2rem 2.5rem; }
+
+/* ── PANELS (tabs) ── */
+.panel { display:none; }
+.panel.active { display:block; }
+
+/* ══ OVERVIEW PANEL ══ */
+
+/* Greeting */
+.greeting { margin-bottom:2rem; }
+.greeting h2 {
+  font-family:'Cormorant Garamond',serif;
+  font-size:2rem; font-weight:300; color:var(--mocha);
+}
+.greeting p { font-size:0.88rem; color:var(--gray); margin-top:0.3rem; }
+
+/* Stat cards */
+.stats-row { display:grid; grid-template-columns:repeat(4,1fr); gap:1.2rem; margin-bottom:2rem; }
+.stat-card {
+  background:var(--cream); border-radius:1rem;
+  padding:1.4rem 1.5rem;
+  border:1px solid var(--sand-dark);
+  position:relative; overflow:hidden;
+}
+.stat-card::after {
+  content:''; position:absolute;
+  bottom:-20px; right:-20px;
+  width:80px; height:80px; border-radius:50%;
+  background:var(--terra-pale);
+}
+.stat-label { font-size:0.72rem; letter-spacing:0.08em; text-transform:uppercase; color:var(--gray); margin-bottom:0.6rem; }
+.stat-value {
+  font-family:'Cormorant Garamond',serif;
+  font-size:2.2rem; font-weight:300; color:var(--mocha); line-height:1;
+}
+.stat-value.terra { color:var(--terra); }
+.stat-delta {
+  font-size:0.72rem; margin-top:0.4rem;
+  display:flex; align-items:center; gap:0.3rem;
+}
+.delta-up { color:var(--success); }
+.delta-down { color:#C44A4A; }
+.stat-icon { font-size:1.1rem; margin-bottom:0.5rem; opacity:0.5; }
+
+/* Two col layout */
+.two-col { display:grid; grid-template-columns:1fr 1fr; gap:1.5rem; margin-bottom:1.5rem; }
+.three-col { display:grid; grid-template-columns:2fr 1fr; gap:1.5rem; margin-bottom:1.5rem; }
+
+/* Card base */
+.card {
+  background:var(--cream); border-radius:1rem;
+  border:1px solid var(--sand-dark); overflow:hidden;
+}
+.card-header {
+  padding:1.2rem 1.5rem;
+  border-bottom:1px solid var(--sand-dark);
+  display:flex; align-items:center; justify-content:space-between;
+}
+.card-title {
+  font-family:'Cormorant Garamond',serif;
+  font-size:1.1rem; font-weight:300; color:var(--mocha);
+}
+.card-action {
+  font-size:0.75rem; color:var(--terra); cursor:pointer;
+  text-decoration:none; border-bottom:1px solid transparent;
+  transition:border-color 0.2s;
+}
+.card-action:hover { border-color:var(--terra); }
+.card-body { padding:1.5rem; }
+
+/* Project list items */
+.project-item {
+  display:flex; align-items:flex-start; gap:1rem;
+  padding:0.9rem 0; border-bottom:1px solid var(--sand);
+}
+.project-item:last-child { border-bottom:none; padding-bottom:0; }
+.proj-icon {
+  width:36px; height:36px; border-radius:0.6rem;
+  display:flex; align-items:center; justify-content:center;
+  font-size:0.9rem; flex-shrink:0; margin-top:2px;
+}
+.proj-icon.apt { background:rgba(196,113,74,0.12); }
+.proj-icon.villa { background:rgba(184,146,74,0.12); }
+.proj-icon.cafe { background:rgba(74,155,111,0.12); }
+.proj-icon.office { background:rgba(100,120,180,0.12); }
+.proj-info { flex:1; min-width:0; }
+.proj-name { font-size:0.88rem; font-weight:500; color:var(--mocha); margin-bottom:0.2rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.proj-meta { font-size:0.75rem; color:var(--gray); }
+.proj-status {
+  font-size:0.68rem; letter-spacing:0.06em; text-transform:uppercase;
+  padding:0.2rem 0.6rem; border-radius:1rem; font-weight:500; flex-shrink:0;
+}
+.status-active { background:rgba(74,155,111,0.12); color:var(--success); }
+.status-review { background:rgba(196,113,74,0.12); color:var(--terra); }
+.status-pending { background:rgba(154,143,135,0.12); color:var(--gray); }
+
+/* Milestone progress */
+.milestone-bar {
+  height:4px; background:var(--sand-dark); border-radius:2px;
+  margin-top:0.5rem; overflow:hidden;
+}
+.milestone-fill { height:100%; background:var(--terra); border-radius:2px; transition:width 0.5s ease; }
+
+/* Earnings mini-chart (CSS bars) */
+.mini-chart { display:flex; align-items:flex-end; gap:6px; height:60px; margin-bottom:0.5rem; }
+.bar-wrap { flex:1; display:flex; flex-direction:column; align-items:center; gap:4px; }
+.bar {
+  width:100%; background:var(--terra-pale); border-radius:3px 3px 0 0;
+  transition:height 0.4s ease;
+  position:relative; cursor:pointer;
+}
+.bar.active-bar { background:var(--terra); }
+.bar:hover { background:var(--terra); opacity:0.8; }
+.bar-label { font-size:0.6rem; color:var(--gray); }
+
+/* Quick actions */
+.quick-actions { display:grid; grid-template-columns:1fr 1fr; gap:0.8rem; }
+.qa-btn {
+  display:flex; align-items:center; gap:0.7rem;
+  padding:0.9rem 1rem; border-radius:0.75rem;
+  border:1px solid var(--sand-dark); background:var(--sand);
+  cursor:pointer; transition:all 0.2s; font-family:inherit;
+  font-size:0.82rem; color:var(--mocha); text-align:left;
+}
+.qa-btn:hover { border-color:var(--terra); background:var(--terra-pale); }
+.qa-icon { font-size:1.1rem; }
+
+/* Profile completeness */
+.completeness { margin-bottom:1.5rem; }
+.completeness-bar { height:6px; background:var(--sand-dark); border-radius:3px; overflow:hidden; margin:0.5rem 0; }
+.completeness-fill { height:100%; background:linear-gradient(90deg, var(--terra), var(--gold)); border-radius:3px; width:72%; }
+.completeness-items { display:flex; flex-direction:column; gap:0.5rem; }
+.ci {
+  display:flex; align-items:center; gap:0.6rem;
+  font-size:0.78rem; color:var(--mocha-mid);
+}
+.ci-check { color:var(--success); font-size:0.75rem; }
+.ci-x { color:var(--gray); font-size:0.75rem; }
+
+/* ══ PROPOSALS PANEL ══ */
+.filter-row {
+  display:flex; align-items:center; gap:0.8rem; margin-bottom:1.5rem; flex-wrap:wrap;
+}
+.filter-chip {
+  padding:0.4rem 1rem; border-radius:2rem;
+  border:1px solid var(--sand-dark); background:var(--cream);
+  font-size:0.78rem; color:var(--mocha-mid); cursor:pointer;
+  transition:all 0.2s; font-family:inherit;
+}
+.filter-chip:hover, .filter-chip.active {
+  background:var(--mocha); color:var(--cream); border-color:var(--mocha);
+}
+.filter-chip.terra.active { background:var(--terra); border-color:var(--terra); color:white; }
+.search-small {
+  display:flex; align-items:center; gap:0.5rem;
+  background:var(--cream); border:1px solid var(--sand-dark);
+  border-radius:2rem; padding:0.4rem 0.9rem;
+  margin-left:auto;
+}
+.search-small input {
+  border:none; outline:none; font-family:inherit;
+  font-size:0.8rem; color:var(--mocha); background:none; width:160px;
+}
+.search-small input::placeholder { color:var(--gray); }
+
+/* Open project cards */
+.open-projects-grid { display:flex; flex-direction:column; gap:1.2rem; }
+.open-project-card {
+  background:var(--cream); border-radius:1rem;
+  border:1px solid var(--sand-dark);
+  padding:1.5rem; transition:all 0.25s; cursor:pointer;
+}
+.open-project-card:hover {
+  border-color:rgba(196,113,74,0.4);
+  box-shadow:0 8px 30px rgba(44,24,16,0.08);
+  transform:translateY(-1px);
+}
+.op-header { display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:0.8rem; }
+.op-type {
+  font-size:0.68rem; letter-spacing:0.1em; text-transform:uppercase;
+  color:var(--terra); background:var(--terra-pale);
+  padding:0.22rem 0.7rem; border-radius:1rem;
+}
+.op-budget {
+  font-family:'Cormorant Garamond',serif;
+  font-size:1.4rem; font-weight:300; color:var(--mocha);
+}
+.op-title { font-size:1rem; font-weight:500; margin-bottom:0.5rem; color:var(--mocha); }
+.op-desc { font-size:0.82rem; line-height:1.6; color:var(--mocha-mid); margin-bottom:1rem; }
+.op-footer { display:flex; align-items:center; justify-content:space-between; }
+.op-meta { display:flex; align-items:center; gap:1rem; }
+.op-location { font-size:0.75rem; color:var(--gray); }
+.op-bids { font-size:0.75rem; color:var(--terra); }
+.op-match {
+  font-size:0.72rem; letter-spacing:0.06em;
+  background:rgba(74,155,111,0.1); color:var(--success);
+  padding:0.2rem 0.7rem; border-radius:1rem;
+}
+.bid-btn {
+  background:var(--mocha); color:white;
+  border:none; padding:0.5rem 1.3rem; border-radius:2rem;
+  font-size:0.78rem; cursor:pointer; font-family:inherit; transition:all 0.2s;
+}
+.bid-btn:hover { background:var(--terra); }
+
+/* My proposals */
+.my-proposals-list { display:flex; flex-direction:column; gap:0.8rem; margin-top:1.5rem; }
+.mp-card {
+  background:var(--cream); border-radius:0.75rem;
+  border:1px solid var(--sand-dark);
+  padding:1.2rem 1.5rem;
+  display:flex; align-items:center; gap:1.2rem;
+}
+.mp-color { width:4px; height:40px; border-radius:2px; flex-shrink:0; }
+.mp-info { flex:1; }
+.mp-title { font-size:0.9rem; font-weight:500; color:var(--mocha); }
+.mp-sub { font-size:0.75rem; color:var(--gray); margin-top:0.2rem; }
+.mp-date { font-size:0.72rem; color:var(--gray); text-align:right; }
+.mp-amount { font-family:'Cormorant Garamond',serif; font-size:1.1rem; color:var(--terra); }
+
+/* Proposal form modal */
+.modal-overlay {
+  position:fixed; inset:0; z-index:200;
+  background:rgba(44,24,16,0.55); backdrop-filter:blur(6px);
+  display:flex; align-items:center; justify-content:center; padding:1.5rem;
+  opacity:0; pointer-events:none; transition:opacity 0.3s;
+}
+.modal-overlay.open { opacity:1; pointer-events:all; }
+.modal {
+  background:var(--cream); border-radius:1.5rem;
+  width:100%; max-width:600px; max-height:90vh; overflow-y:auto;
+  transform:translateY(20px) scale(0.98);
+  transition:transform 0.3s cubic-bezier(.22,.68,0,1.2);
+}
+.modal-overlay.open .modal { transform:translateY(0) scale(1); }
+.modal-header {
+  padding:1.5rem 2rem; border-bottom:1px solid var(--sand-dark);
+  display:flex; align-items:center; justify-content:space-between;
+}
+.modal-title {
+  font-family:'Cormorant Garamond',serif;
+  font-size:1.4rem; font-weight:300;
+}
+.modal-close {
+  background:none; border:none; cursor:pointer;
+  color:var(--gray); font-size:1.1rem; transition:color 0.2s;
+}
+.modal-close:hover { color:var(--mocha); }
+.modal-body { padding:2rem; display:flex; flex-direction:column; gap:1.2rem; }
+.form-group { display:flex; flex-direction:column; gap:0.4rem; }
+.form-label { font-size:0.75rem; letter-spacing:0.08em; text-transform:uppercase; color:var(--mocha-mid); }
+.form-input, .form-textarea, .form-select {
+  background:var(--sand); border:1px solid var(--sand-dark);
+  border-radius:0.6rem; padding:0.75rem 1rem;
+  font-family:inherit; font-size:0.88rem; color:var(--mocha);
+  outline:none; transition:border-color 0.2s;
+}
+.form-input:focus, .form-textarea:focus, .form-select:focus {
+  border-color:var(--terra);
+}
+.form-textarea { resize:vertical; min-height:100px; }
+.form-row { display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
+.modal-footer {
+  padding:1.5rem 2rem; border-top:1px solid var(--sand-dark);
+  display:flex; justify-content:flex-end; gap:0.8rem;
+}
+.btn-cancel {
+  background:none; border:1px solid var(--sand-dark);
+  color:var(--mocha-mid); padding:0.65rem 1.5rem; border-radius:2rem;
+  font-size:0.84rem; cursor:pointer; font-family:inherit; transition:all 0.2s;
+}
+.btn-cancel:hover { border-color:var(--mocha); color:var(--mocha); }
+.btn-submit {
+  background:var(--terra); color:white;
+  border:none; padding:0.65rem 1.8rem; border-radius:2rem;
+  font-size:0.84rem; cursor:pointer; font-family:inherit; transition:all 0.2s;
+}
+.btn-submit:hover { background:var(--mocha); }
+
+/* ══ PROJECTS PANEL ══ */
+.projects-board { display:grid; grid-template-columns:repeat(3,1fr); gap:1.5rem; }
+.proj-col-title {
+  font-size:0.7rem; letter-spacing:0.14em; text-transform:uppercase;
+  color:var(--gray); margin-bottom:1rem;
+  display:flex; align-items:center; gap:0.5rem;
+}
+.proj-col-count {
+  background:var(--sand-dark); color:var(--mocha-mid);
+  font-size:0.65rem; padding:0.1rem 0.5rem; border-radius:1rem;
+}
+.proj-card {
+  background:var(--cream); border-radius:1rem;
+  border:1px solid var(--sand-dark); padding:1.3rem;
+  margin-bottom:1rem; cursor:pointer; transition:all 0.25s;
+}
+.proj-card:hover {
+  border-color:rgba(196,113,74,0.35);
+  box-shadow:0 6px 24px rgba(44,24,16,0.07);
+}
+.proj-card-type {
+  font-size:0.65rem; letter-spacing:0.1em; text-transform:uppercase;
+  color:var(--terra); margin-bottom:0.6rem;
+}
+.proj-card-title { font-size:0.9rem; font-weight:500; color:var(--mocha); margin-bottom:0.4rem; }
+.proj-card-client { font-size:0.75rem; color:var(--gray); margin-bottom:1rem; }
+.proj-card-budget {
+  font-family:'Cormorant Garamond',serif;
+  font-size:1.1rem; color:var(--mocha); margin-bottom:0.8rem;
+}
+.proj-card-progress { margin-bottom:0.8rem; }
+.prog-label { display:flex; justify-content:space-between; font-size:0.72rem; color:var(--gray); margin-bottom:0.3rem; }
+.prog-bar { height:3px; background:var(--sand-dark); border-radius:2px; overflow:hidden; }
+.prog-fill { height:100%; background:var(--terra); border-radius:2px; }
+.proj-card-footer {
+  display:flex; align-items:center; justify-content:space-between;
+  font-size:0.72rem; color:var(--gray);
+}
+.proj-card-due { display:flex; align-items:center; gap:0.3rem; }
+.milestone-chips { display:flex; gap:0.3rem; flex-wrap:wrap; margin-top:0.6rem; }
+.ms-chip {
+  font-size:0.62rem; padding:0.15rem 0.5rem; border-radius:1rem;
+}
+.ms-done { background:rgba(74,155,111,0.12); color:var(--success); }
+.ms-active { background:rgba(196,113,74,0.12); color:var(--terra); }
+.ms-todo { background:var(--sand-dark); color:var(--gray); }
+
+/* ══ PROFILE PANEL ══ */
+.profile-edit-grid { display:grid; grid-template-columns:1fr 1.6fr; gap:1.5rem; }
+.profile-preview-card {
+  background:var(--mocha); border-radius:1rem; overflow:hidden;
+}
+.profile-preview-cover {
+  height:120px;
+  background:linear-gradient(135deg,#C8B4A0 0%,#A8907A 100%);
+  position:relative;
+}
+.profile-preview-avatar {
+  width:64px; height:64px; border-radius:50%;
+  background:var(--terra); border:3px solid var(--mocha);
+  display:flex; align-items:center; justify-content:center;
+  font-family:'Cormorant Garamond',serif; font-size:1.4rem; color:white;
+  position:absolute; bottom:-32px; left:1.5rem;
+}
+.profile-preview-body { padding:2.5rem 1.5rem 1.5rem; color:var(--cream); }
+.profile-preview-name { font-family:'Cormorant Garamond',serif; font-size:1.3rem; font-weight:300; margin-bottom:0.2rem; }
+.profile-preview-spec { font-size:0.78rem; color:rgba(253,250,246,0.5); margin-bottom:1rem; }
+.profile-preview-tags { display:flex; flex-wrap:wrap; gap:0.4rem; }
+.preview-tag {
+  font-size:0.68rem; padding:0.2rem 0.6rem; border-radius:1rem;
+  border:1px solid rgba(253,250,246,0.15); color:rgba(253,250,246,0.6);
+}
+.profile-preview-stats {
+  display:grid; grid-template-columns:1fr 1fr;
+  gap:0.8rem; margin-top:1.2rem; padding-top:1rem;
+  border-top:1px solid rgba(255,255,255,0.07);
+}
+.pp-stat-num { font-family:'Cormorant Garamond',serif; font-size:1.3rem; color:var(--terra); }
+.pp-stat-label { font-size:0.65rem; color:rgba(253,250,246,0.35); }
+
+.section-divider {
+  font-size:0.7rem; letter-spacing:0.14em; text-transform:uppercase;
+  color:var(--gray); margin-bottom:1rem; margin-top:0.5rem;
+  padding-bottom:0.5rem; border-bottom:1px solid var(--sand-dark);
+}
+.tag-input-area { display:flex; flex-wrap:wrap; gap:0.4rem; padding:0.6rem 0.8rem; background:var(--sand); border:1px solid var(--sand-dark); border-radius:0.6rem; min-height:44px; cursor:text; }
+.added-tag {
+  display:flex; align-items:center; gap:0.3rem;
+  background:var(--terra-pale); border:1px solid rgba(196,113,74,0.2);
+  color:var(--terra); font-size:0.75rem; padding:0.15rem 0.6rem; border-radius:1rem;
+}
+.added-tag button { background:none; border:none; cursor:pointer; color:var(--terra); font-size:0.75rem; padding:0; line-height:1; }
+.tag-input { border:none; outline:none; background:none; font-family:inherit; font-size:0.82rem; color:var(--mocha); min-width:80px; }
+
+/* ══ EARNINGS PANEL ══ */
+.earnings-header-row { display:grid; grid-template-columns:repeat(3,1fr); gap:1.2rem; margin-bottom:1.5rem; }
+.earn-card {
+  background:var(--cream); border-radius:1rem; border:1px solid var(--sand-dark);
+  padding:1.4rem; text-align:center;
+}
+.earn-card.highlight { background:var(--mocha); border-color:var(--mocha); }
+.earn-label { font-size:0.7rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--gray); margin-bottom:0.4rem; }
+.earn-card.highlight .earn-label { color:rgba(253,250,246,0.4); }
+.earn-value { font-family:'Cormorant Garamond',serif; font-size:2rem; font-weight:300; color:var(--mocha); }
+.earn-card.highlight .earn-value { color:var(--terra); }
+.earn-sub { font-size:0.72rem; color:var(--gray); margin-top:0.2rem; }
+.earn-card.highlight .earn-sub { color:rgba(253,250,246,0.3); }
+
+/* Chart area */
+.chart-area {
+  background:var(--cream); border-radius:1rem; border:1px solid var(--sand-dark);
+  padding:1.5rem; margin-bottom:1.5rem;
+}
+.big-chart { display:flex; align-items:flex-end; gap:10px; height:120px; margin:1.5rem 0 0.5rem; }
+.bc-bar {
+  flex:1; border-radius:4px 4px 0 0;
+  background:var(--sand-dark); transition:background 0.2s; cursor:pointer;
+  position:relative;
+}
+.bc-bar:hover { background:var(--terra-light); }
+.bc-bar.curr { background:var(--terra); }
+.bc-labels { display:flex; gap:10px; }
+.bc-label { flex:1; text-align:center; font-size:0.62rem; color:var(--gray); }
+
+/* Transaction list */
+.tx-list { display:flex; flex-direction:column; gap:0; }
+.tx-item {
+  display:flex; align-items:center; gap:1rem;
+  padding:0.9rem 0; border-bottom:1px solid var(--sand);
+}
+.tx-item:last-child { border-bottom:none; }
+.tx-icon {
+  width:34px; height:34px; border-radius:0.6rem;
+  display:flex; align-items:center; justify-content:center;
+  font-size:0.85rem; flex-shrink:0;
+}
+.tx-in { background:rgba(74,155,111,0.1); }
+.tx-out { background:rgba(196,113,74,0.1); }
+.tx-info { flex:1; }
+.tx-name { font-size:0.85rem; font-weight:500; color:var(--mocha); }
+.tx-date { font-size:0.72rem; color:var(--gray); }
+.tx-amount { font-family:'Cormorant Garamond',serif; font-size:1.1rem; }
+.tx-amount.income { color:var(--success); }
+.tx-amount.pending { color:var(--warning); }
+
+/* ── Toast ── */
+.toast {
+  position:fixed; bottom:2rem; right:2rem; z-index:300;
+  background:var(--mocha); color:var(--cream);
+  padding:0.8rem 1.4rem; border-radius:0.75rem;
+  font-size:0.84rem; display:flex; align-items:center; gap:0.6rem;
+  transform:translateY(10px); opacity:0;
+  transition:all 0.3s; pointer-events:none;
+  box-shadow:0 8px 30px rgba(44,24,16,0.2);
+}
+.toast.show { opacity:1; transform:translateY(0); }
+.toast-icon { color:var(--terra); }
+
+/* ── Responsive ── */
+@media (max-width:900px) {
+  .sidebar { width:60px; }
+  .sidebar-logo, .nav-section-label, .user-name, .user-role, .logo-badge { display:none; }
+  .nav-item { padding:0.8rem; justify-content:center; }
+  .nav-badge { display:none; }
+  .stats-row { grid-template-columns:1fr 1fr; }
+  .two-col, .three-col, .projects-board, .profile-edit-grid { grid-template-columns:1fr; }
+  .content { padding:1.5rem; }
+}
+</style>
+</head>
+<body>
+
+<div class="shell">
+
+  <!-- ── SIDEBAR ── -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <a class="logo-text" href="#">De<span>co</span></a>
+      <div class="logo-badge">Designer Portal</div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Main</div>
+      <button class="nav-item active" onclick="switchPanel('overview',this)">
+        <span class="nav-icon">◈</span> Overview
+      </button>
+      <button class="nav-item" onclick="switchPanel('proposals',this)">
+        <span class="nav-icon">◻</span> Proposals
+        <span class="nav-badge">3</span>
+      </button>
+      <button class="nav-item" onclick="switchPanel('projects',this)">
+        <span class="nav-icon">◑</span> My Projects
+      </button>
+
+      <div class="nav-section-label">Account</div>
+      <button class="nav-item" onclick="switchPanel('profile',this)">
+        <span class="nav-icon">◉</span> Profile
+      </button>
+      <button class="nav-item" onclick="switchPanel('earnings',this)">
+        <span class="nav-icon">◇</span> Earnings
+      </button>
+      <button class="nav-item" onclick="showToast('Messages coming soon')">
+        <span class="nav-icon">◫</span> Messages
+        <span class="nav-badge">5</span>
+      </button>
+    </nav>
+
+    <div class="sidebar-user">
+      <div class="user-avatar">N</div>
+      <div>
+        <div class="user-name">Nora Al-Rashidi</div>
+        <div class="user-role">Interior Designer</div>
+      </div>
+      <div class="user-status"></div>
+    </div>
+  </aside>
+
+  <!-- ── MAIN ── -->
+  <div class="main">
+
+    <!-- Topbar -->
+    <div class="topbar">
+      <div class="page-title" id="pageTitle">Overview</div>
+      <div class="topbar-right">
+        <button class="topbar-btn" onclick="switchPanel('proposals', document.querySelectorAll('.nav-item')[1])">
+          ◻ Browse Projects
+        </button>
+        <button class="topbar-btn primary" onclick="openModal()">+ Submit Proposal</button>
+        <button class="notif-btn">
+          🔔
+          <span class="notif-dot"></span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Content -->
+    <div class="content">
+
+      <!-- ══ OVERVIEW ══ -->
+      <div class="panel active" id="panel-overview">
+
+        <div class="greeting">
+          <h2>Good morning, Nora ✦</h2>
+          <p>You have 3 open proposals and 2 active projects this week.</p>
+        </div>
+
+        <!-- Stats -->
+        <div class="stats-row">
+          <div class="stat-card">
+            <div class="stat-icon">◈</div>
+            <div class="stat-label">Active Projects</div>
+            <div class="stat-value terra">2</div>
+            <div class="stat-delta delta-up">↑ 1 new this month</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">◻</div>
+            <div class="stat-label">Pending Proposals</div>
+            <div class="stat-value">3</div>
+            <div class="stat-delta" style="color:var(--gray)">Awaiting client response</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">◇</div>
+            <div class="stat-label">Earnings This Month</div>
+            <div class="stat-value terra">18,500</div>
+            <div class="stat-delta delta-up">↑ 22% vs last month</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">◉</div>
+            <div class="stat-label">Profile Views</div>
+            <div class="stat-value">347</div>
+            <div class="stat-delta delta-up">↑ 18% this week</div>
+          </div>
+        </div>
+
+        <!-- Active Projects + Quick Actions -->
+        <div class="three-col">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">Active Projects</div>
+              <a class="card-action" onclick="switchPanel('projects',document.querySelectorAll('.nav-item')[2])">View all →</a>
+            </div>
+            <div class="card-body">
+              <div class="project-item">
+                <div class="proj-icon apt">🏠</div>
+                <div class="proj-info">
+                  <div class="proj-name">Modern Living Room — Al Malqa</div>
+                  <div class="proj-meta">Client: Omar Al-Harbi · SAR 45,000</div>
+                  <div class="milestone-bar"><div class="milestone-fill" style="width:65%"></div></div>
+                  <div class="proj-meta" style="margin-top:3px">Milestone 2 of 4 — In Progress</div>
+                </div>
+                <div class="proj-status status-active">Active</div>
+              </div>
+              <div class="project-item">
+                <div class="proj-icon villa">🏡</div>
+                <div class="proj-info">
+                  <div class="proj-name">Villa Bedroom Suite — Diriyah</div>
+                  <div class="proj-meta">Client: Fatima Al-Ghamdi · SAR 28,000</div>
+                  <div class="milestone-bar"><div class="milestone-fill" style="width:30%"></div></div>
+                  <div class="proj-meta" style="margin-top:3px">Milestone 1 of 3 — Design Phase</div>
+                </div>
+                <div class="proj-status status-review">Review</div>
+              </div>
+              <div class="project-item">
+                <div class="proj-icon cafe">☕</div>
+                <div class="proj-info">
+                  <div class="proj-name">Café Interior — Al-Olaya</div>
+                  <div class="proj-meta">Client: Saud Enterprises · SAR 72,000</div>
+                  <div class="milestone-bar"><div class="milestone-fill" style="width:10%"></div></div>
+                  <div class="proj-meta" style="margin-top:3px">Awaiting contract signing</div>
+                </div>
+                <div class="proj-status status-pending">Pending</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">Quick Actions</div>
+            </div>
+            <div class="card-body">
+              <div class="quick-actions">
+                <button class="qa-btn" onclick="switchPanel('proposals',document.querySelectorAll('.nav-item')[1])">
+                  <span class="qa-icon">◻</span> Browse Open Projects
+                </button>
+                <button class="qa-btn" onclick="openModal()">
+                  <span class="qa-icon">✦</span> Submit Proposal
+                </button>
+                <button class="qa-btn" onclick="switchPanel('profile',document.querySelectorAll('.nav-item')[3])">
+                  <span class="qa-icon">◉</span> Update Portfolio
+                </button>
+                <button class="qa-btn" onclick="switchPanel('earnings',document.querySelectorAll('.nav-item')[4])">
+                  <span class="qa-icon">◇</span> View Earnings
+                </button>
+              </div>
+
+              <div style="margin-top:1.5rem">
+                <div class="section-divider">Profile Completeness</div>
+                <div class="completeness">
+                  <div style="display:flex;justify-content:space-between;align-items:center">
+                    <span style="font-size:0.8rem;color:var(--mocha-mid)">72% complete</span>
+                    <span style="font-size:0.72rem;color:var(--terra)">+28% to go</span>
+                  </div>
+                  <div class="completeness-bar"><div class="completeness-fill"></div></div>
+                  <div class="completeness-items">
+                    <div class="ci"><span class="ci-check">✓</span> Profile photo & bio</div>
+                    <div class="ci"><span class="ci-check">✓</span> Portfolio photos (5 added)</div>
+                    <div class="ci"><span class="ci-check">✓</span> Specialties & style tags</div>
+                    <div class="ci"><span class="ci-x">○</span> <span style="color:var(--gray)">Add service pricing</span></div>
+                    <div class="ci"><span class="ci-x">○</span> <span style="color:var(--gray)">Link Instagram portfolio</span></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Earnings chart -->
+        <div class="card" style="margin-bottom:1.5rem">
+          <div class="card-header">
+            <div class="card-title">Earnings — Last 6 Months</div>
+            <a class="card-action" onclick="switchPanel('earnings',document.querySelectorAll('.nav-item')[4])">Full report →</a>
+          </div>
+          <div class="card-body">
+            <div class="mini-chart">
+              <div class="bar-wrap"><div class="bar" style="height:40%"></div><div class="bar-label">Nov</div></div>
+              <div class="bar-wrap"><div class="bar" style="height:55%"></div><div class="bar-label">Dec</div></div>
+              <div class="bar-wrap"><div class="bar" style="height:35%"></div><div class="bar-label">Jan</div></div>
+              <div class="bar-wrap"><div class="bar" style="height:70%"></div><div class="bar-label">Feb</div></div>
+              <div class="bar-wrap"><div class="bar" style="height:60%"></div><div class="bar-label">Mar</div></div>
+              <div class="bar-wrap"><div class="bar active-bar" style="height:80%"></div><div class="bar-label">Apr</div></div>
+            </div>
+            <div style="font-size:0.75rem;color:var(--gray)">SAR values — hover bars for details</div>
+          </div>
+        </div>
+
+      </div><!-- /overview -->
+
+      <!-- ══ PROPOSALS ══ -->
+      <div class="panel" id="panel-proposals">
+
+        <div class="greeting">
+          <h2>Proposals</h2>
+          <p>Browse open projects and manage your submitted proposals.</p>
+        </div>
+
+        <div class="filter-row">
+          <button class="filter-chip active" onclick="setFilter(this)">All Projects</button>
+          <button class="filter-chip" onclick="setFilter(this)">Residential</button>
+          <button class="filter-chip" onclick="setFilter(this)">Commercial</button>
+          <button class="filter-chip" onclick="setFilter(this)">Villa</button>
+          <button class="filter-chip" onclick="setFilter(this)">Office</button>
+          <div class="search-small">
+            <span style="color:var(--gray);font-size:0.85rem">🔍</span>
+            <input type="text" placeholder="Search projects...">
+          </div>
+        </div>
+
+        <div style="font-size:0.75rem;color:var(--gray);margin-bottom:1rem">Showing 4 open projects matching your expertise</div>
+
+        <div class="open-projects-grid">
+
+          <div class="open-project-card">
+            <div class="op-header">
+              <span class="op-type">Full Apartment</span>
+              <div class="op-budget">SAR 45,000</div>
+            </div>
+            <div class="op-title">Modern Living Room & Master Bedroom</div>
+            <div class="op-desc">Looking for a minimalist designer to redesign a 180m² apartment in north Riyadh. Neutral palette with warm wood accents. 3D rendering required before execution.</div>
+            <div class="op-footer">
+              <div class="op-meta">
+                <span class="op-location">📍 North Riyadh</span>
+                <span class="op-bids">7 proposals</span>
+                <span class="op-match">95% match</span>
+              </div>
+              <button class="bid-btn" onclick="openModal()">Submit Proposal →</button>
+            </div>
+          </div>
+
+          <div class="open-project-card">
+            <div class="op-header">
+              <span class="op-type">Villa</span>
+              <div class="op-budget">SAR 200,000</div>
+            </div>
+            <div class="op-title">Full Villa Design — 5 Bedrooms</div>
+            <div class="op-desc">Brand new villa in Al-Khobar. Contemporary Saudi style, includes outdoor landscape design. Client prefers female designers with residential experience.</div>
+            <div class="op-footer">
+              <div class="op-meta">
+                <span class="op-location">📍 Al-Khobar</span>
+                <span class="op-bids">3 proposals</span>
+                <span class="op-match">88% match</span>
+              </div>
+              <button class="bid-btn" onclick="openModal()">Submit Proposal →</button>
+            </div>
+          </div>
+
+          <div class="open-project-card">
+            <div class="op-header">
+              <span class="op-type">Residential</span>
+              <div class="op-budget">SAR 32,000</div>
+            </div>
+            <div class="op-title">3-Bedroom Apartment Refresh — Jeddah</div>
+            <div class="op-desc">Newlywed couple looking to redesign their apartment in Al-Zahraa district. Scandinavian meets warm Arabic aesthetic. Budget flexible for the right designer.</div>
+            <div class="op-footer">
+              <div class="op-meta">
+                <span class="op-location">📍 Jeddah</span>
+                <span class="op-bids">11 proposals</span>
+                <span class="op-match">82% match</span>
+              </div>
+              <button class="bid-btn" onclick="openModal()">Submit Proposal →</button>
+            </div>
+          </div>
+
+          <div class="open-project-card">
+            <div class="op-header">
+              <span class="op-type">Home Office</span>
+              <div class="op-budget">SAR 18,000</div>
+            </div>
+            <div class="op-title">Luxury Home Office — Al-Nakheel</div>
+            <div class="op-desc">Executive home office setup, 35m² dedicated room. Needs full design, built-in storage, and lighting plan. Prefer designers who have done home office projects before.</div>
+            <div class="op-footer">
+              <div class="op-meta">
+                <span class="op-location">📍 Riyadh</span>
+                <span class="op-bids">5 proposals</span>
+                <span class="op-match">79% match</span>
+              </div>
+              <button class="bid-btn" onclick="openModal()">Submit Proposal →</button>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- My submitted proposals -->
+        <div style="margin-top:2.5rem">
+          <div class="card-title" style="margin-bottom:1rem">My Submitted Proposals</div>
+          <div class="my-proposals-list">
+            <div class="mp-card">
+              <div class="mp-color" style="background:var(--success)"></div>
+              <div class="mp-info">
+                <div class="mp-title">Modern Living Room — Al Malqa</div>
+                <div class="mp-sub">Submitted 3 days ago · Client viewed ✓</div>
+              </div>
+              <div style="text-align:right">
+                <div class="mp-amount">SAR 45,000</div>
+                <div class="mp-date">Accepted</div>
+              </div>
+              <span class="proj-status status-active" style="margin-left:0.5rem">Won</span>
+            </div>
+            <div class="mp-card">
+              <div class="mp-color" style="background:var(--terra)"></div>
+              <div class="mp-info">
+                <div class="mp-title">Café Interior Design — Al-Olaya</div>
+                <div class="mp-sub">Submitted 1 week ago · Client reviewing</div>
+              </div>
+              <div style="text-align:right">
+                <div class="mp-amount">SAR 72,000</div>
+                <div class="mp-date">Under review</div>
+              </div>
+              <span class="proj-status status-review" style="margin-left:0.5rem">Review</span>
+            </div>
+            <div class="mp-card">
+              <div class="mp-color" style="background:var(--gray)"></div>
+              <div class="mp-info">
+                <div class="mp-title">Office Redesign — KAFD</div>
+                <div class="mp-sub">Submitted 2 weeks ago · 14 competitors</div>
+              </div>
+              <div style="text-align:right">
+                <div class="mp-amount">SAR 65,000</div>
+                <div class="mp-date">Awaiting</div>
+              </div>
+              <span class="proj-status status-pending" style="margin-left:0.5rem">Pending</span>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /proposals -->
+
+      <!-- ══ PROJECTS ══ -->
+      <div class="panel" id="panel-projects">
+
+        <div class="greeting">
+          <h2>My Projects</h2>
+          <p>Track milestones, deliverables, and client approvals.</p>
+        </div>
+
+        <div class="projects-board">
+
+          <!-- In Progress -->
+          <div>
+            <div class="proj-col-title">
+              🟠 In Progress <span class="proj-col-count">2</span>
+            </div>
+            <div class="proj-card">
+              <div class="proj-card-type">Full Apartment</div>
+              <div class="proj-card-title">Modern Living Room — Al Malqa</div>
+              <div class="proj-card-client">Client: Omar Al-Harbi</div>
+              <div class="proj-card-budget">SAR 45,000</div>
+              <div class="proj-card-progress">
+                <div class="prog-label"><span>Progress</span><span>65%</span></div>
+                <div class="prog-bar"><div class="prog-fill" style="width:65%"></div></div>
+              </div>
+              <div class="milestone-chips">
+                <span class="ms-chip ms-done">✓ Brief</span>
+                <span class="ms-chip ms-done">✓ Concept</span>
+                <span class="ms-chip ms-active">→ 3D Design</span>
+                <span class="ms-chip ms-todo">◯ Execution</span>
+              </div>
+              <div class="proj-card-footer" style="margin-top:0.8rem">
+                <div class="proj-card-due">📅 Due May 30</div>
+                <button class="bid-btn" style="padding:0.4rem 0.9rem;font-size:0.72rem" onclick="showToast('Project details opened')">View →</button>
+              </div>
+            </div>
+            <div class="proj-card">
+              <div class="proj-card-type">Residential Villa</div>
+              <div class="proj-card-title">Villa Bedroom Suite — Diriyah</div>
+              <div class="proj-card-client">Client: Fatima Al-Ghamdi</div>
+              <div class="proj-card-budget">SAR 28,000</div>
+              <div class="proj-card-progress">
+                <div class="prog-label"><span>Progress</span><span>30%</span></div>
+                <div class="prog-bar"><div class="prog-fill" style="width:30%"></div></div>
+              </div>
+              <div class="milestone-chips">
+                <span class="ms-chip ms-done">✓ Brief</span>
+                <span class="ms-chip ms-active">→ Concept</span>
+                <span class="ms-chip ms-todo">◯ 3D</span>
+                <span class="ms-chip ms-todo">◯ Execution</span>
+              </div>
+              <div class="proj-card-footer" style="margin-top:0.8rem">
+                <div class="proj-card-due">📅 Due Jun 15</div>
+                <button class="bid-btn" style="padding:0.4rem 0.9rem;font-size:0.72rem" onclick="showToast('Project details opened')">View →</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Under Review -->
+          <div>
+            <div class="proj-col-title">
+              🔵 Awaiting Approval <span class="proj-col-count">1</span>
+            </div>
+            <div class="proj-card">
+              <div class="proj-card-type">Commercial</div>
+              <div class="proj-card-title">Café Interior — Al-Olaya</div>
+              <div class="proj-card-client">Client: Saud Enterprises</div>
+              <div class="proj-card-budget">SAR 72,000</div>
+              <div class="proj-card-progress">
+                <div class="prog-label"><span>Progress</span><span>10%</span></div>
+                <div class="prog-bar"><div class="prog-fill" style="width:10%"></div></div>
+              </div>
+              <div class="milestone-chips">
+                <span class="ms-chip ms-done">✓ Brief</span>
+                <span class="ms-chip ms-active">⏳ Contract</span>
+                <span class="ms-chip ms-todo">◯ Concept</span>
+                <span class="ms-chip ms-todo">◯ 3D</span>
+                <span class="ms-chip ms-todo">◯ Execution</span>
+              </div>
+              <div style="margin-top:0.8rem;padding:0.7rem;background:var(--sand);border-radius:0.5rem;font-size:0.75rem;color:var(--terra)">
+                ⚠ Waiting for client to sign contract. Sent 3 days ago.
+              </div>
+              <div class="proj-card-footer" style="margin-top:0.8rem">
+                <div class="proj-card-due">📅 Starts Jun 1</div>
+                <button class="bid-btn" style="padding:0.4rem 0.9rem;font-size:0.72rem" onclick="showToast('Reminder sent to client')">Send Reminder</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Completed -->
+          <div>
+            <div class="proj-col-title">
+              🟢 Completed <span class="proj-col-count">3</span>
+            </div>
+            <div class="proj-card" style="opacity:0.75">
+              <div class="proj-card-type">Apartment</div>
+              <div class="proj-card-title">Full Apartment — Al-Yasmin</div>
+              <div class="proj-card-client">Client: Reem Al-Mutairi</div>
+              <div class="proj-card-budget">SAR 38,000</div>
+              <div class="milestone-chips">
+                <span class="ms-chip ms-done">✓ All milestones</span>
+              </div>
+              <div class="proj-card-footer" style="margin-top:0.8rem">
+                <div class="proj-card-due">⭐ Rated 5.0</div>
+                <span class="proj-status status-active">Done</span>
+              </div>
+            </div>
+            <div class="proj-card" style="opacity:0.75">
+              <div class="proj-card-type">Home Office</div>
+              <div class="proj-card-title">Executive Home Office — Sulaimaniya</div>
+              <div class="proj-card-client">Client: Waleed Al-Dosari</div>
+              <div class="proj-card-budget">SAR 22,000</div>
+              <div class="milestone-chips">
+                <span class="ms-chip ms-done">✓ All milestones</span>
+              </div>
+              <div class="proj-card-footer" style="margin-top:0.8rem">
+                <div class="proj-card-due">⭐ Rated 4.8</div>
+                <span class="proj-status status-active">Done</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div><!-- /projects -->
+
+      <!-- ══ PROFILE ══ -->
+      <div class="panel" id="panel-profile">
+
+        <div class="greeting">
+          <h2>Edit Profile</h2>
+          <p>Your public profile is how clients discover and evaluate you.</p>
+        </div>
+
+        <div class="profile-edit-grid">
+
+          <!-- Preview card -->
+          <div>
+            <div class="section-divider">Live Preview</div>
+            <div class="profile-preview-card">
+              <div class="profile-preview-cover">
+                <div class="profile-preview-avatar">N</div>
+              </div>
+              <div class="profile-preview-body">
+                <div class="profile-preview-name">Nora Al-Rashidi</div>
+                <div class="profile-preview-spec">Contemporary & Minimalist · Riyadh</div>
+                <div class="profile-preview-tags">
+                  <span class="preview-tag">Minimalist</span>
+                  <span class="preview-tag">Contemporary</span>
+                  <span class="preview-tag">3D Rendering</span>
+                  <span class="preview-tag">Residential</span>
+                </div>
+                <div class="profile-preview-stats">
+                  <div>
+                    <div class="pp-stat-num">4.9</div>
+                    <div class="pp-stat-label">Avg Rating</div>
+                  </div>
+                  <div>
+                    <div class="pp-stat-num">47</div>
+                    <div class="pp-stat-label">Projects</div>
+                  </div>
+                  <div>
+                    <div class="pp-stat-num">98%</div>
+                    <div class="pp-stat-label">Satisfaction</div>
+                  </div>
+                  <div>
+                    <div class="pp-stat-num">3 yrs</div>
+                    <div class="pp-stat-label">On Deco</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div style="margin-top:1rem">
+              <div class="section-divider">Visibility</div>
+              <div style="display:flex;flex-direction:column;gap:0.6rem">
+                <label style="display:flex;align-items:center;gap:0.7rem;font-size:0.84rem;cursor:pointer">
+                  <input type="checkbox" checked> Accept new project requests
+                </label>
+                <label style="display:flex;align-items:center;gap:0.7rem;font-size:0.84rem;cursor:pointer">
+                  <input type="checkbox" checked> Show on homepage featured list
+                </label>
+                <label style="display:flex;align-items:center;gap:0.7rem;font-size:0.84rem;cursor:pointer">
+                  <input type="checkbox"> Available for urgent projects
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <!-- Edit form -->
+          <div>
+            <div class="section-divider">Personal Information</div>
+            <div style="display:flex;flex-direction:column;gap:1rem;margin-bottom:1.5rem">
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label">Full Name</label>
+                  <input class="form-input" value="Nora Al-Rashidi">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">City</label>
+                  <select class="form-select">
+                    <option selected>Riyadh</option>
+                    <option>Jeddah</option>
+                    <option>Dammam</option>
+                    <option>Al-Khobar</option>
+                    <option>Mecca</option>
+                    <option>Medina</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Specialty Title</label>
+                <input class="form-input" value="Contemporary & Minimalist Interior Design">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Bio</label>
+                <textarea class="form-textarea">I specialize in creating serene, functional spaces that balance clean lines with warmth. With over 7 years of experience in residential and hospitality design, I bring a deeply personal approach to every project — listening first, designing second.</textarea>
+              </div>
+            </div>
+
+            <div class="section-divider">Style Tags</div>
+            <div style="margin-bottom:1.5rem">
+              <div class="tag-input-area" id="tagArea">
+                <span class="added-tag">Minimalist <button onclick="removeTag(this)">×</button></span>
+                <span class="added-tag">Contemporary <button onclick="removeTag(this)">×</button></span>
+                <span class="added-tag">3D Rendering <button onclick="removeTag(this)">×</button></span>
+                <span class="added-tag">Residential <button onclick="removeTag(this)">×</button></span>
+                <span class="added-tag">Space Planning <button onclick="removeTag(this)">×</button></span>
+                <input class="tag-input" placeholder="Add tag..." onkeydown="addTag(event)">
+              </div>
+              <div style="font-size:0.72rem;color:var(--gray);margin-top:0.4rem">Press Enter to add a tag</div>
+            </div>
+
+            <div class="section-divider">Pricing</div>
+            <div style="display:flex;flex-direction:column;gap:1rem;margin-bottom:1.5rem">
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label">Minimum Project (SAR)</label>
+                  <input class="form-input" value="15,000" type="text">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Rate Type</label>
+                  <select class="form-select">
+                    <option>Per project</option>
+                    <option>Per m²</option>
+                    <option>Hourly</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <button class="btn-submit" style="width:100%" onclick="showToast('✓ Profile saved successfully')">Save Changes</button>
+          </div>
+
+        </div>
+
+      </div><!-- /profile -->
+
+      <!-- ══ EARNINGS ══ -->
+      <div class="panel" id="panel-earnings">
+
+        <div class="greeting">
+          <h2>Earnings</h2>
+          <p>Your financial overview and payment history.</p>
+        </div>
+
+        <div class="earnings-header-row">
+          <div class="earn-card highlight">
+            <div class="earn-label">Total Earned (All Time)</div>
+            <div class="earn-value">SAR 287,500</div>
+            <div class="earn-sub">Since joining Deco in 2022</div>
+          </div>
+          <div class="earn-card">
+            <div class="earn-label">This Month</div>
+            <div class="earn-value" style="color:var(--terra)">SAR 18,500</div>
+            <div class="earn-sub">↑ 22% vs last month</div>
+          </div>
+          <div class="earn-card">
+            <div class="earn-label">Pending Release</div>
+            <div class="earn-value" style="color:var(--warning)">SAR 34,000</div>
+            <div class="earn-sub">Held in escrow — 2 active projects</div>
+          </div>
+        </div>
+
+        <!-- Chart -->
+        <div class="chart-area">
+          <div class="card-title">Monthly Earnings — 2025</div>
+          <div class="big-chart">
+            <div class="bc-bar" style="height:35%" title="Nov: SAR 12,000"></div>
+            <div class="bc-bar" style="height:50%" title="Dec: SAR 18,000"></div>
+            <div class="bc-bar" style="height:28%" title="Jan: SAR 10,000"></div>
+            <div class="bc-bar" style="height:65%" title="Feb: SAR 22,000"></div>
+            <div class="bc-bar" style="height:55%" title="Mar: SAR 19,000"></div>
+            <div class="bc-bar curr" style="height:80%" title="Apr: SAR 28,500"></div>
+          </div>
+          <div class="bc-labels">
+            <div class="bc-label">Nov</div>
+            <div class="bc-label">Dec</div>
+            <div class="bc-label">Jan</div>
+            <div class="bc-label">Feb</div>
+            <div class="bc-label">Mar</div>
+            <div class="bc-label">Apr</div>
+          </div>
+        </div>
+
+        <!-- Transactions -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Transaction History</div>
+            <a class="card-action">Export CSV →</a>
+          </div>
+          <div class="card-body">
+            <div class="tx-list">
+              <div class="tx-item">
+                <div class="tx-icon tx-in">💰</div>
+                <div class="tx-info">
+                  <div class="tx-name">Milestone 2 — Modern Living Room</div>
+                  <div class="tx-date">Apr 18, 2025 · Omar Al-Harbi</div>
+                </div>
+                <div class="tx-amount income">+ SAR 11,250</div>
+              </div>
+              <div class="tx-item">
+                <div class="tx-icon tx-in">💰</div>
+                <div class="tx-info">
+                  <div class="tx-name">Milestone 1 — Villa Suite Diriyah</div>
+                  <div class="tx-date">Apr 10, 2025 · Fatima Al-Ghamdi</div>
+                </div>
+                <div class="tx-amount income">+ SAR 7,000</div>
+              </div>
+              <div class="tx-item">
+                <div class="tx-icon tx-in">💰</div>
+                <div class="tx-info">
+                  <div class="tx-name">Final Payment — Al-Yasmin Apartment</div>
+                  <div class="tx-date">Mar 28, 2025 · Reem Al-Mutairi</div>
+                </div>
+                <div class="tx-amount income">+ SAR 19,000</div>
+              </div>
+              <div class="tx-item">
+                <div class="tx-icon tx-out">⏳</div>
+                <div class="tx-info">
+                  <div class="tx-name">Milestone 3 — Café Al-Olaya (escrow)</div>
+                  <div class="tx-date">Pending client approval · Est. May 25</div>
+                </div>
+                <div class="tx-amount pending">SAR 24,000</div>
+              </div>
+              <div class="tx-item">
+                <div class="tx-icon tx-in">💰</div>
+                <div class="tx-info">
+                  <div class="tx-name">Milestone 2 — Executive Home Office</div>
+                  <div class="tx-date">Mar 15, 2025 · Waleed Al-Dosari</div>
+                </div>
+                <div class="tx-amount income">+ SAR 11,000</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /earnings -->
+
+    </div><!-- /content -->
+  </div><!-- /main -->
+</div><!-- /shell -->
+
+<!-- ── PROPOSAL MODAL ── -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeOnBg(event)">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Submit a Proposal</div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label">Project</label>
+        <select class="form-select">
+          <option>Modern Living Room & Master Bedroom — North Riyadh</option>
+          <option>Full Villa Design — Al-Khobar</option>
+          <option>3-Bedroom Refresh — Jeddah</option>
+          <option>Luxury Home Office — Al-Nakheel</option>
+        </select>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Your Quote (SAR)</label>
+          <input class="form-input" placeholder="e.g. 45,000" type="text">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Estimated Timeline</label>
+          <select class="form-select">
+            <option>2–4 weeks</option>
+            <option>1–2 months</option>
+            <option>2–3 months</option>
+            <option>3–6 months</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Your Proposal Message</label>
+        <textarea class="form-textarea" placeholder="Describe your approach, why you're the right fit, and what the client can expect from you..."></textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Portfolio Link (optional)</label>
+        <input class="form-input" placeholder="Instagram, Behance, or your Deco profile">
+      </div>
+      <div style="padding:0.8rem 1rem;background:var(--sand);border-radius:0.6rem;font-size:0.78rem;color:var(--mocha-mid);line-height:1.6">
+        ✦ Your full portfolio is automatically shared with the client. A 10% platform fee applies upon project completion.
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+      <button class="btn-submit" onclick="submitProposal()">Send Proposal →</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast">
+  <span class="toast-icon">✦</span>
+  <span id="toastMsg">Saved!</span>
+</div>
+
+<script>
+// ── PANEL SWITCHING ──
+const panels = document.querySelectorAll('.panel');
+const pageTitles = {
+  overview: 'Overview',
+  proposals: 'Proposals',
+  projects: 'My Projects',
+  profile: 'Edit Profile',
+  earnings: 'Earnings'
+};
+
+function switchPanel(name, btn) {
+  panels.forEach(p => p.classList.remove('active'));
+  document.getElementById('panel-' + name).classList.add('active');
+  document.getElementById('pageTitle').textContent = pageTitles[name] || name;
+  document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+}
+
+// ── FILTERS ──
+function setFilter(el) {
+  document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+}
+
+// ── MODAL ──
+function openModal() {
+  document.getElementById('modalOverlay').classList.add('open');
+}
+function closeModal() {
+  document.getElementById('modalOverlay').classList.remove('open');
+}
+function closeOnBg(e) {
+  if (e.target === document.getElementById('modalOverlay')) closeModal();
+}
+function submitProposal() {
+  closeModal();
+  showToast('✓ Proposal sent! Client will be notified.');
+}
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+// ── TOAST ──
+let toastTimer;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  document.getElementById('toastMsg').textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+// ── TAGS ──
+function addTag(e) {
+  if (e.key !== 'Enter') return;
+  const input = e.target;
+  const val = input.value.trim();
+  if (!val) return;
+  const tag = document.createElement('span');
+  tag.className = 'added-tag';
+  tag.innerHTML = `${val} <button onclick="removeTag(this)">×</button>`;
+  input.parentNode.insertBefore(tag, input);
+  input.value = '';
+}
+function removeTag(btn) {
+  btn.parentNode.remove();
+}
+</script>
+</body>
+</html>
